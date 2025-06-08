@@ -1,23 +1,66 @@
 import React, { use } from "react";
 import Registerlottie from '../assets/lottie/Register.json'
 import Lottie from "lottie-react";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../contexts/Context";
+import Swal from "sweetalert2";
 const Register=()=>{
 
-  const {signInWithGoogle, createUser}=use(AuthContext)
+  const {signInWithGoogle, createUser}=use(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from =location.state || "/"
 
   const handleRegister=(e)=>{
     e.preventDefault();
 
     const form = e.target;
+   const name = form.name.value;
     const email = form.email.value;
+    const photo =form.photo.value;
     const password = form.password.value;
-    console.log(email, password)
+
+
+    if (!name || !email || !password) {
+      Swal.fire({
+        title: 'Missing Information!',
+        text: 'Please fill in all required fields.',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#dc2626'
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      Swal.fire({
+        title: 'Weak Password!',
+        text: 'Password must be at least 6 characters long.',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#dc2626'
+      });
+      return;
+    }
 
     createUser(email, password)
     .then(result=>{
       console.log("created an account",result.user)
+       Swal.fire({
+          title: 'Registration Successful! 🎉',
+          text: `Welcome to ReadRipple, ${name}! Your account has been created successfully.`,
+          icon: 'success',
+          showConfirmButton: true,
+          confirmButtonText: 'Get Started',
+          confirmButtonColor: '#950d0b',
+          timerProgressBar: true,
+          allowOutsideClick: false,
+          customClass: {
+            popup: 'animate__animated animate__fadeInUp'
+          }
+        });
+        navigate(from)
+      
     })
     .catch(error=>{
       console.log(error)
@@ -29,6 +72,20 @@ const Register=()=>{
      signInWithGoogle()
      .then(result=>{
       console.log("sign in with google",result.user)
+
+      Swal.fire({
+         title: ' Successfully Sign In 🎉',
+         icon: 'success',
+         showConfirmButton: true,
+         confirmButtonText: 'Get Started',
+         confirmButtonColor: '#950d0b',
+         timerProgressBar: true,
+         allowOutsideClick: false,
+        customClass: {
+                      popup: 'animate__animated animate__fadeInUp'
+                      }
+        });
+          navigate(from)
      })
   }
   return(
@@ -44,6 +101,8 @@ const Register=()=>{
         <form  onSubmit={handleRegister}  className="fieldset">
           <label className="label">Name</label>
           <input name="name" type="name" className="input" placeholder="Your Name" />
+          <label className="label">Photo</label>
+          <input name="photo" type="URl" className="input" placeholder="Your Photo URl" />
           <label className="label">Email</label>
           <input name="email" type="email" className="input" placeholder="Email" />
           <label className="label">Password</label>

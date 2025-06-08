@@ -1,20 +1,51 @@
 import Lottie from "lottie-react";
 import SigninLottie from '../assets/lottie/Signin.json'
 import React, { use } from "react";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../contexts/Context";
+import Swal from "sweetalert2";
 const SignIn=()=>{
   const { SignInWithEmail , signInWithGoogle}=use(AuthContext)
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state || "/"
 
   const handleSignIn=(e)=>{
     e.preventDefault()
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, password)
+    
+    if (!email || !password) {
+      Swal.fire({
+        title: 'Missing Information!',
+        text: 'Please fill in all required fields.',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#950d0b'
+      });
+      return;
+    }
+
+
     SignInWithEmail(email, password)
     .then(result =>{
       console.log("sign in successfully")
+
+      Swal.fire({
+                title: ' Successfully Sign In 🎉',
+                icon: 'success',
+                showConfirmButton: true,
+                confirmButtonText: 'Get Started',
+                confirmButtonColor: '#950d0b',
+                timerProgressBar: true,
+                allowOutsideClick: false,
+                customClass: {
+                  popup: 'animate__animated animate__fadeInUp'
+                }
+              });
+              navigate(from)
     })
     .catch(error=>{
       console.log(error)
@@ -26,6 +57,20 @@ const SignIn=()=>{
   signInWithGoogle()
   .then(result=>{
     console.log("google sign in successfully",result.user)
+
+    Swal.fire({
+                title: ' Successfully Sign In 🎉',
+                icon: 'success',
+                showConfirmButton: true,
+                confirmButtonText: 'Get Started',
+                confirmButtonColor: '#950d0b',
+                timerProgressBar: true,
+                allowOutsideClick: false,
+                customClass: {
+                  popup: 'animate__animated animate__fadeInUp'
+                }
+              });
+              navigate(from)
   })
   .catch(error=>{
     console.log(error)
