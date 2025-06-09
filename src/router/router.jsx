@@ -5,6 +5,10 @@ import LayOut from "../layouts/LayOut";
 import Home from "../pages/Home";
 import Register from "../pages/Register";
 import SignIn from "../pages/SignIn";
+import AddBooks from "../pages/AddBooks";
+import PrivateRouter from "../components/PrivateRouter";
+import Bookshelf from "../pages/BookShelf";
+import BookDetails from "../pages/BooksDetails";
 
 export const router = createBrowserRouter([
   {
@@ -14,6 +18,23 @@ export const router = createBrowserRouter([
       {
         index:true,
         Component:Home
+      },
+      {
+        path:"/bookshelf",
+        Component:Bookshelf,
+        loader:()=>fetch('http://localhost:3000/books')
+      },
+      {
+       path:"/bookshelf/:id",
+       Component:BookDetails,
+       loader:({params})=>fetch(`http://localhost:3000/books/${params.id}`)
+      },
+      {
+        path:"addbooks",
+        element:
+        <PrivateRouter>
+         <AddBooks/>
+        </PrivateRouter>
       },
       {
         path:'register',

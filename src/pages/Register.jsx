@@ -3,6 +3,7 @@ import Registerlottie from '../assets/lottie/Register.json'
 import Lottie from "lottie-react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../contexts/Context";
+import { updateProfile } from "firebase/auth";
 import Swal from "sweetalert2";
 const Register=()=>{
 
@@ -15,13 +16,13 @@ const Register=()=>{
     e.preventDefault();
 
     const form = e.target;
-   const name = form.name.value;
+   const displayName = form.displayName.value;
     const email = form.email.value;
     const photo =form.photo.value;
     const password = form.password.value;
 
 
-    if (!name || !email || !password) {
+    if (!displayName || !email || !password) {
       Swal.fire({
         title: 'Missing Information!',
         text: 'Please fill in all required fields.',
@@ -46,9 +47,13 @@ const Register=()=>{
     createUser(email, password)
     .then(result=>{
       console.log("created an account",result.user)
+      updateProfile(result.user,{
+        displayName:displayName,
+        photoUrl:photo 
+      })
        Swal.fire({
           title: 'Registration Successful! 🎉',
-          text: `Welcome to ReadRipple, ${name}! Your account has been created successfully.`,
+          text: `Welcome to ReadRipple, ${displayName}! Your account has been created successfully.`,
           icon: 'success',
           showConfirmButton: true,
           confirmButtonText: 'Get Started',
@@ -60,6 +65,7 @@ const Register=()=>{
           }
         });
         navigate(from)
+       
       
     })
     .catch(error=>{
@@ -100,7 +106,7 @@ const Register=()=>{
          <h1 className="text-5xl text-red-950 font-bold">Register Now!!</h1>
         <form  onSubmit={handleRegister}  className="fieldset">
           <label className="label">Name</label>
-          <input name="name" type="name" className="input" placeholder="Your Name" />
+          <input name="displayName" type="name" className="input" placeholder="Your Name" />
           <label className="label">Photo</label>
           <input name="photo" type="URl" className="input" placeholder="Your Photo URl" />
           <label className="label">Email</label>

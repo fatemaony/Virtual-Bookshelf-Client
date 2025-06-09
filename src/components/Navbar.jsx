@@ -24,7 +24,7 @@ const Navbar=()=>{
         <Link to={"/bookshelf"}>
         <li className='text-red-950 font-semibold px-5'>Bookshelf</li>
         </Link>
-        <Link to={"/addBook"}>
+        <Link to={"/addbooks"}>
         <li className='text-red-950 font-semibold px-5'>Add Book</li>
         </Link>
         <Link to={"/myBooks"}>
@@ -33,11 +33,11 @@ const Navbar=()=>{
         
   </>
 return(
-  <div className="navbar bg-base-100 shadow-lg px-10">
+  <div className="navbar bg-base-100 shadow-lg lg:px-10">
   <div className="navbar-start">
     <div className="dropdown">
-      <div tabIndex={0} role="button" className="lg:hidden w-[30px] font-extrabold  text-red-950">
-        <TbHomeInfinity />
+      <div tabIndex={0} role="button" className="btn btn-ghost text-red-950 lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /> </svg>
       </div>
       <ul
         tabIndex={0}
@@ -45,7 +45,7 @@ return(
         {links}
       </ul>
     </div>
-    <a className="text-xl font-bold text-red-950">ReadRipple</a>
+    <a className="text-xl  flex items-center text-red-950"> <TbHomeInfinity />Read<span className='text-red-800 font-bold'>Ripple</span></a>
   </div>
   <div className="navbar-center hidden lg:flex">
     <ul className="menu menu-horizontal px-1">

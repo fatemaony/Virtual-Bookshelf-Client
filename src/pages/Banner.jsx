@@ -59,7 +59,7 @@ const Banner = () => {
 
   return (
     <div 
-      className="relative w-[90%] mx-auto h-[600px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-2xl shadow-2xl my-5 "
+      className="relative w-full mx-auto h-[600px] md:h-[500px] lg:h-[600px] overflow-hidden"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
