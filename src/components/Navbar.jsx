@@ -1,5 +1,5 @@
 import react, { use } from 'react';
-import { TbHomeInfinity } from "react-icons/tb";
+import { GiBurningBook } from "react-icons/gi";
 import { Link } from 'react-router';
 import { AuthContext } from '../contexts/Context';
 
@@ -45,7 +45,13 @@ return(
         {links}
       </ul>
     </div>
-    <a className="text-xl  flex items-center text-red-950"> <TbHomeInfinity />Read<span className='text-red-800 font-bold'>Ripple</span></a>
+    <div className="text-xl flex items-center gap-1 text-red-950">
+ <GiBurningBook />
+  <p>
+    Read<span className="text-red-800 font-bold">Ripple</span>
+  </p>
+</div>
+
   </div>
   <div className="navbar-center hidden lg:flex">
     <ul className="menu menu-horizontal px-1">
