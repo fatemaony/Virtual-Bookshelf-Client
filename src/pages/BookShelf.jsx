@@ -26,23 +26,21 @@ const Bookshelf = () => {
         transition={{ delay: 0.2, duration: 0.5 }}
         className="justify-center flex lg:flex-row flex-col items-center gap-5 mt-6"
       >
-        <div className="inline-flex items-center bg-amber-50 p-2 rounded-xl border-2 border-amber-800 shadow-sm hover:shadow-md transition">
-          <input
-            type="search"
-            placeholder="Search Books"
-            className="bg-transparent outline-none px-3 text-base w-64 placeholder:text-amber-900"
-          />
-          <CiSearch className="text-2xl text-amber-800 cursor-pointer hover:text-red-700 transition" />
-        </div>
-       
-
-       <div>
-        <select name="reading_status" className="select select-bordered border-2 rounded-xl border-amber-800 text-base w-48 lg:w-60 shadow-sm hover:shadow-md transition">
-        <option value="Read">Read</option>
-        <option value="Reading">Reading</option>
-        <option value="Want-to-Read">Want-to-Read</option>
-        </select>
-      </div>
+        <div className="join">
+  <div>
+    <div className="w-72">
+      <input className="input join-item" placeholder="Search" />
+    </div>
+  </div>
+  <select name="reading_status" className="select select-bordered ">
+   <option value="Read">Read</option>
+   <option value="Reading">Reading</option>
+   <option value="Want-to-Read">Want-to-Read</option>
+  </select>
+  <div className="indicator">
+    <button className="btn join-item bg-amber-800 text-white">Search</button>
+  </div>
+</div>
         
       </motion.div>
 

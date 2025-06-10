@@ -10,6 +10,7 @@ import PrivateRouter from "../components/PrivateRouter";
 import Bookshelf from "../pages/BookShelf";
 import BookDetails from "../pages/BooksDetails";
 import MyBooks from "../pages/MyBooks";
+import ErrorPage from "../components/ErrorPage";
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +19,8 @@ export const router = createBrowserRouter([
     children:[
       {
         index:true,
-        Component:Home
+        Component:Home,
+        loader:()=>fetch("http://localhost:3000/books")
       },
       {
         path:"/bookshelf",
@@ -55,4 +57,8 @@ export const router = createBrowserRouter([
       }
     ]
   },
+  {
+    path:"/*",
+    Component:ErrorPage
+  }
 ]);

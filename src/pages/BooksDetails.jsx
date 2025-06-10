@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLoaderData } from "react-router";
 import { FaHeart } from "react-icons/fa";
 import { motion } from "framer-motion";
+import useBookUpvote from "../components/UseBookUpvote"; 
+import { div } from "motion/react-client";
+import ReviwsSection from "../components/ReviewsSection";
 
 const BookDetails = () => {
-  const bookdata = useLoaderData();
+  const initialBookData = useLoaderData();
+  const [bookdata, setBookdata] = useState(initialBookData);
+  
   const {
     _id,
     book_title,
@@ -17,8 +22,33 @@ const BookDetails = () => {
     upvote,
   } = bookdata;
 
+  const {
+    upvoteBook,
+    getUpvoteCount,
+    hasUserUpvoted,
+    getUpvoteButtonText,
+    getUpvoteButtonClass,
+    isUpvoting
+  } = useBookUpvote();
+
+  const handleUpvote = async () => {
+    await upvoteBook(_id, bookdata, (updatedBook) => {
+     
+      setBookdata(prev => ({
+        ...prev,
+        upvote: updatedBook.upvote,
+        upvotes: updatedBook.upvotes
+      }));
+    });
+  };
+
+
+  const displayUpvoteCount = bookdata.upvotes ? getUpvoteCount(bookdata) : upvote;
+
   return (
-    <div className="bg-gradient-to-br from-yellow-50 to-pink-100 min-h-screen py-10 px-4 lg:px-20">
+    <div  className="bg-gradient-to-br from-yellow-50 to-pink-100 min-h-screen py-10 px-4 lg:px-20">
+
+      <div>
       <motion.div
         className="flex flex-col lg:flex-row items-center gap-10 bg-white/80 backdrop-blur-md p-10 rounded-2xl shadow-xl"
         initial={{ opacity: 0, y: 40 }}
@@ -69,9 +99,24 @@ const BookDetails = () => {
          
           <motion.button
             whileHover={{ scale: 1.1 }}
-            className="flex items-center gap-2 btn btn-sm bg-pink-100 text-red-900 border-red-300 hover:bg-red-200"
+            onClick={handleUpvote}
+            disabled={isUpvoting}
+            className={`flex items-center gap-2 btn btn-sm transition ${
+              hasUserUpvoted(bookdata)
+                ? 'bg-red-300 text-red-700 border-red-700'
+                : 'bg-pink-100 text-red-900 border-red-300 hover:bg-red-200'
+            }`}
           >
-            {upvote} <FaHeart className="text-red-700" />
+            {isUpvoting ? (
+              <>
+                <span className="loading loading-spinner loading-xs"></span>
+                <FaHeart className="text-red-700" />
+              </>
+            ) : (
+              <>
+                {displayUpvoteCount} <FaHeart className="text-white" />
+              </>
+            )}
           </motion.button>
 
           
@@ -80,6 +125,11 @@ const BookDetails = () => {
           <button className="btn bg-red-900 text-white">Read More</button>
         </motion.div>
       </motion.div>
+    </div>
+
+      <div className="py-15">
+       <ReviwsSection/>
+      </div>
     </div>
   );
 };

@@ -2,8 +2,9 @@ import React from "react";
 import { FaHeart, FaBookOpen } from "react-icons/fa";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
+import useBookUpvote from "../components/UseBookUpvote"; // Adjust path as needed
 
-const BookShelfCard = ({ book }) => {
+const BookShelfCard = ({ book, books, setBooks }) => {
   const {
     _id,
     book_category,
@@ -13,6 +14,32 @@ const BookShelfCard = ({ book }) => {
     cover_photo,
     book_title,
   } = book;
+
+  const {
+    upvoteBook,
+    getUpvoteCount,
+    hasUserUpvoted,
+    getUpvoteButtonText,
+    getUpvoteButtonClass,
+    isUpvoting
+  } = useBookUpvote();
+
+  const handleUpvote = async (e) => {
+    e.preventDefault(); 
+    e.stopPropagation(); 
+    
+    await upvoteBook(_id, book, (updatedBook) => {
+     
+      if (setBooks && books) {
+        setBooks(books.map(b => 
+          b._id === _id ? { ...b, upvote: updatedBook.upvote, upvotes: updatedBook.upvotes } : b
+        ));
+      }
+    });
+  };
+
+
+  const displayUpvoteCount = book.upvotes ? getUpvoteCount(book) : upvote;
 
   return (
     <motion.div
@@ -33,8 +60,22 @@ const BookShelfCard = ({ book }) => {
         <span className="badge badge-warning text-white px-3 py-1 font-semibold shadow-md">
           {book_author}
         </span>
-        <button className="flex items-center gap-1 text-sm px-3 py-1 rounded-full bg-red-100 text-red-800 hover:bg-red-200 transition">
-          {upvote} <FaHeart className="text-red-600" />
+        <button 
+          onClick={handleUpvote}
+          disabled={isUpvoting}
+          className={`flex items-center gap-1 text-sm px-3 py-1 rounded-full transition ${
+            hasUserUpvoted(book) 
+              ? 'bg-red-600 text-white hover:bg-red-700' 
+              : 'bg-red-100 text-red-800 hover:bg-red-200'
+          }`}
+        >
+          {isUpvoting ? (
+            <span className="loading loading-spinner loading-xs"></span>
+          ) : (
+            <>
+              {displayUpvoteCount} <FaHeart className={`${hasUserUpvoted(book) ? 'text-white' : 'text-red-600'}`} />
+            </>
+          )}
         </button>
       </div>
 
@@ -46,7 +87,6 @@ const BookShelfCard = ({ book }) => {
           <span className="font-semibold text-black">Category:</span>{" "}
           {book_category}
         </p>
-        <p className="text-gray-600 text-sm line-clamp-3">{book_overview}</p>
 
         <div className="text-end mt-4">
           <Link to={`/bookshelf/${_id}`}>
