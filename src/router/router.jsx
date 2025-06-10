@@ -12,6 +12,7 @@ import BookDetails from "../pages/BooksDetails";
 import MyBooks from "../pages/MyBooks";
 import ErrorPage from "../components/ErrorPage";
 import Profile from "../pages/Profile";
+import UpdateBookForm from "../pages/UpdateBook";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,11 @@ export const router = createBrowserRouter([
        path:"/bookshelf/:id",
        Component:BookDetails,
        loader:({params})=>fetch(`http://localhost:3000/books/${params.id}`)
+      },
+      {
+        path:"/updatebook/:id",
+        Component:UpdateBookForm,
+        loader:({params})=>fetch(`http://localhost:3000/books/${params.id}`)
       },
       {
         path:"myBooks",

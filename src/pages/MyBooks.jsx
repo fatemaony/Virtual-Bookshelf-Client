@@ -124,7 +124,7 @@ const MyBooks = () => {
                 <td className="py-3 px-4 text-center">
                   <div className="flex justify-center gap-2">
                     <Link
-                      to={`/update/${book._id}`}
+                      to={`/updatebook/${book._id}`}
                       className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                     >
                       Update
