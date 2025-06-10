@@ -6,16 +6,6 @@ import { AuthContext } from '../contexts/Context';
 const Navbar=()=>{
   const {user, signOutUser}=use(AuthContext)
 
-  const handleSignOut=()=>{
-    signOutUser()
-    .then(result=>{
-      console.log("sign out successfully")
-    })
-    .catch(error=>{
-      console.log(error)
-    })
-  }
-
   const links = 
   <>
         <Link to={"/"}>
@@ -71,7 +61,11 @@ return(
   </div>
   <div className="navbar-end">
    {
-    user? <button className="btn btn-outline text-red-950 hover:bg-red-950 hover:text-white" onClick={handleSignOut}>Sign Out</button> 
+    user? <div className="avatar">
+  <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
+    <Link to={"/profile"}><img src={user.photoURL} /></Link>
+  </div>
+</div> 
     :<Link to={"/signin"}>
     <button className="btn btn-outline text-red-950 hover:bg-red-950 hover:text-white">
       Sign In

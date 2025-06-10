@@ -2,6 +2,7 @@ import React, { use, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { AuthContext } from "../contexts/Context";
 import { Link } from "react-router";
+import Swal from "sweetalert2";
 
 const MyBooks = () => {
   const myBooks = useLoaderData();
@@ -17,12 +18,63 @@ const MyBooks = () => {
   );
 
   const handleDelete = async (id) => {
+
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    });
+    
+    if (!result.isConfirmed) {
+      return;
+    }
+
     setIsDeleting(id);
-    // Simulate delete
-    setTimeout(() => {
-      setCurrentBooks((prev) => prev.filter((book) => book._id !== id));
+
+    try {
+      
+      const response = await fetch(`http://localhost:3000/books/${id}`,{
+        method:"DELETE",
+        headers:{
+          'content-type':'application/json'
+        }
+      });
+
+      const deletedResult = await response.json();
+      if (response.ok && deletedResult.success) {
+        setCurrentBooks(prevBooks=> prevBooks.filter(book=> book._id !==id))
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'Your listing has been deleted successfully.',
+          icon: 'success',
+          confirmButtonColor: '#3085d6'
+        });
+      }else{
+        Swal.fire({
+          title: 'Error!',
+          text: deletedResult.message || 'Failed to delete listing. Please try again.',
+          icon: 'error',
+          confirmButtonColor: '#3085d6'  
+        });
+      } 
+
+    } catch (error) {
+      console.error("Error deleting listing:", error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'An error occurred while deleting the listing. Please try again.',
+        icon: 'error',
+        confirmButtonColor: '#3085d6'
+      });
+    } finally{
       setIsDeleting(null);
-    }, 1000);
+    }
+    
   };
 
   return (

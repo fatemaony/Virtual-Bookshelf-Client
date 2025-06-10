@@ -11,6 +11,7 @@ import Bookshelf from "../pages/BookShelf";
 import BookDetails from "../pages/BooksDetails";
 import MyBooks from "../pages/MyBooks";
 import ErrorPage from "../components/ErrorPage";
+import Profile from "../pages/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +55,13 @@ export const router = createBrowserRouter([
       {
         path:'signin',
         Component:SignIn
+      },
+      {
+        path:"profile",
+        element:
+        <PrivateRouter>
+         <Profile/>
+        </PrivateRouter>
       }
     ]
   },

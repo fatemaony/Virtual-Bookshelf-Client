@@ -33,7 +33,7 @@ const SignIn = () => {
       const result = await SignInWithEmail(email, password);
       console.log("Sign in successfully", result.user);
 
-      // Update login timestamp in database
+      
       try {
         await fetch(`http://localhost:3000/users/${result.user.email}/login`, {
           method: "PATCH",
@@ -43,7 +43,7 @@ const SignIn = () => {
         });
       } catch (dbError) {
         console.log("Failed to update login timestamp:", dbError);
-        // Don't block the sign-in process if database update fails
+        
       }
 
       Swal.fire({
@@ -67,7 +67,7 @@ const SignIn = () => {
       
       let errorMessage = 'Something went wrong during sign in. Please try again.';
       
-      // Handle specific Firebase auth errors
+    
       if (error.code === 'auth/user-not-found') {
         errorMessage = 'No account found with this email address. Please register first.';
       } else if (error.code === 'auth/wrong-password') {
@@ -95,7 +95,7 @@ const SignIn = () => {
       const result = await signInWithGoogle();
       console.log("Google sign in successfully", result.user);
 
-      // Check if user exists in database
+      
       let userExists = false;
       try {
         const userResponse = await fetch(`http://localhost:3000/users/${result.user.email}`);
@@ -104,7 +104,7 @@ const SignIn = () => {
         console.log("Error checking user existence:", error);
       }
 
-      // If user doesn't exist, create their profile
+      
       if (!userExists) {
         const userProfile = {
           email: result.user.email,
@@ -129,10 +129,10 @@ const SignIn = () => {
           console.log("New Google user profile created");
         } catch (dbError) {
           console.log("Failed to create user profile:", dbError);
-          // Don't block the sign-in process if database creation fails
+         
         }
       } else {
-        // Update login timestamp for existing user
+       
         try {
           await fetch(`http://localhost:3000/users/${result.user.email}/login`, {
             method: "PATCH",
@@ -143,7 +143,7 @@ const SignIn = () => {
           console.log("Login timestamp updated for existing user");
         } catch (dbError) {
           console.log("Failed to update login timestamp:", dbError);
-          // Don't block the sign-in process if database update fails
+          
         }
       }
 
@@ -172,7 +172,7 @@ const SignIn = () => {
       
       let errorMessage = 'Something went wrong during Google sign in. Please try again.';
       
-      // Handle specific Google sign-in errors
+     
       if (error.code === 'auth/popup-closed-by-user') {
         errorMessage = 'Sign in was cancelled. Please try again.';
       } else if (error.code === 'auth/popup-blocked') {

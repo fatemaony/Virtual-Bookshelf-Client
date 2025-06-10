@@ -53,12 +53,12 @@ const Register = () => {
         photoURL: photo 
       });
 
-      // Prepare user profile for database
+     
       const userProfile = {
         email: result.user.email,
-        Name: displayName, // Use the form input directly
-        photo: photo, // Use the form input directly
-        uid: result.user.uid, // Add Firebase UID
+        Name: displayName, 
+        photo: photo, 
+        uid: result.user.uid,
         creationTime: result.user?.metadata?.creationTime,
         lastSignInTime: result.user?.metadata?.lastSignInTime,
         registeredAt: new Date().toISOString(),
@@ -118,7 +118,7 @@ const Register = () => {
       const result = await signInWithGoogle();
       console.log("Sign in with Google", result.user);
 
-      // Check if user exists in database, if not create profile
+  
       const userProfile = {
         email: result.user.email,
         Name: result.user.displayName,
@@ -131,7 +131,7 @@ const Register = () => {
         provider: 'google'
       };
 
-      // Try to save user (will fail if user already exists, which is fine)
+   
       try {
         await fetch('http://localhost:3000/users', {
           method: "POST",
@@ -144,7 +144,7 @@ const Register = () => {
         console.log("User might already exist in database");
       }
 
-      // Update login timestamp
+
       await fetch(`http://localhost:3000/users/${result.user.email}/login`, {
         method: "PATCH",
         headers: {
