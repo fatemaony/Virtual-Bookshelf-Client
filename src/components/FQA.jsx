@@ -38,7 +38,7 @@ const FAQ = () => {
           initial={{ y: -20 }}
           animate={{ y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-4xl font-bold text-indigo-700 mb-4 flex items-center justify-center gap-3"
+          className="text-4xl font-bold text-amber-900 mb-4 flex items-center justify-center gap-3"
         >
           <FaQuestionCircle className="text-amber-500" />
           Frequently Asked Questions

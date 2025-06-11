@@ -217,7 +217,7 @@ const Profile = () => {
                   </div>
                   <div>
                     <p className="text-gray-800">
-                      Started reading <span className="font-medium">{readingBooks.book_title}</span>
+                      Started reading <span className="font-medium">Atomic habit</span>
                     </p>
                     <p className="text-sm text-gray-500">1 week ago</p>
                   </div>
