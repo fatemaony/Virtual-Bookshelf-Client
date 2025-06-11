@@ -13,6 +13,7 @@ const BookShelfCard = ({ book, books, setBooks }) => {
     book_author,
     cover_photo,
     book_title,
+    reading_status
   } = book;
 
   const {
@@ -84,8 +85,12 @@ const BookShelfCard = ({ book, books, setBooks }) => {
           {book_title}
         </h2>
         <p className="text-gray-500 text-sm mb-1">
-          <span className="font-semibold text-black">Category:</span>{" "}
+          <span className="font-semibold text-black">Category : </span>
           {book_category}
+        </p>
+        <p className="text-gray-500 text-sm mb-1">
+          <span className="font-semibold text-black">Status : </span>
+          {reading_status}
         </p>
 
         <div className="text-end mt-4">

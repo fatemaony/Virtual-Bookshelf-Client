@@ -1,35 +1,50 @@
-import React, { use } from "react";
+import React, { useState, useContext } from "react";
 import { FiEdit, FiLogOut, FiBook, FiUser, FiGlobe, FiAward } from "react-icons/fi";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { motion } from "framer-motion";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { AuthContext } from "../contexts/Context";
-import { Link } from "react-router";
+import { Link, useLoaderData } from "react-router";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Profile = () => {
+  const myBooks = useLoaderData();
+  const { user, signOutUser } = useContext(AuthContext);
+  const userEmail = user?.email;
+
+  const [currentBooks] = useState(myBooks);
+  const bookListing = currentBooks.filter(
+    (book) => book.addedBy === userEmail || book.user_email === userEmail
+  );
   
+  const fictionCategory = bookListing.filter(book => book.book_category === "Fiction");
+  const nonFictionCategory = bookListing.filter(book => book.book_category === "Non-Fiction");
+  const fantasyCategory = bookListing.filter(book => book.book_category === "Fantasy");
+  const readingBooks = bookListing.find(book => book.reading_status === "Reading");
 
-  const { user, signOutUser } = use(AuthContext)
+  const handleSignOut = () => {
+    signOutUser()
+      .then(result => {
+        console.log("sign out successfully");
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
-  const handleSignOut =()=>{
-   signOutUser()
-    .then(result=>{
-      console.log("sign out successfully")
-    })
-    .catch(error=>{
-      console.log(error)
-    })
-  }
   const chartData = {
-    labels: ["Classic", "Sci-Fi", "Fantasy", "Self-Help"],
+    labels: ["Fiction", "Non-Fiction", "Fantasy"],
     datasets: [
       {
-        data: [2, 1, 1, 2],
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
-        hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+        data: [
+          fictionCategory.length, 
+          nonFictionCategory.length, 
+          fantasyCategory.length
+        ],
+        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+        hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
       },
     ],
   };
@@ -42,13 +57,12 @@ const Profile = () => {
       className="min-h-screen bg-gradient-to-b from-red-50 to-white py-8 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-4xl mx-auto">
-        {/* Profile Header */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
           <div className="bg-red-800 h-32 relative">
             <div className="absolute -bottom-16 left-6">
               <div className="relative group">
                 <img
-                  src={user.photoURL}
+                  src={user?.photoURL || "https://via.placeholder.com/150"}
                   alt="Profile"
                   className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-md"
                 />
@@ -57,7 +71,7 @@ const Profile = () => {
                   data-tooltip-id="edit-tooltip"
                   data-tooltip-content="Edit Profile"
                 >
-                  <FiEdit size={16} />
+                  <Link to="/editprofile"><FiEdit size={16} /></Link>
                 </button>
                 <ReactTooltip id="edit-tooltip" place="top" effect="solid" />
               </div>
@@ -66,15 +80,18 @@ const Profile = () => {
           <div className="pt-20 px-6 pb-6">
             <div className="flex justify-between items-start">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">{user.displayName}</h1>
-                <p className="text-gray-600">{user.email}</p>
+                <h1 className="text-3xl font-bold text-gray-900">{user?.displayName || "User"}</h1>
+                <p className="text-gray-600">{user?.email || "No email"}</p>
               </div>
               <div className="flex space-x-3">
                 <button className="flex items-center space-x-2 bg-red-100 text-red-800 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors">
                   <FiEdit size={18} />
-                  <span>Edit Profile</span>
+                  <Link to="/editprofile"><span>Edit Profile</span></Link>
                 </button>
-                <button onClick={handleSignOut} className="flex items-center space-x-2 bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                <button 
+                  onClick={handleSignOut} 
+                  className="flex items-center space-x-2 bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                >
                   <FiLogOut size={18} />
                   <span>Logout</span>
                 </button>
@@ -84,8 +101,8 @@ const Profile = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Side (Profile Info + Stats) */}
           <div className="lg:col-span-2 space-y-6">
+            
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
                 <FiUser className="mr-2 text-red-700" />
@@ -119,23 +136,20 @@ const Profile = () => {
               </div>
             </div>
 
+          
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
                 <FiBook className="mr-2 text-red-700" />
                 Bookshelf Statistics
               </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                 <div className="bg-red-50 rounded-lg p-4 text-center">
-                  <p className="text-3xl font-bold text-red-800">6</p>
+                  <p className="text-3xl font-bold text-red-800">{bookListing.length}</p>
                   <p className="text-gray-600">Total Books</p>
                 </div>
                 <div className="bg-red-50 rounded-lg p-4 text-center">
-                  <p className="text-3xl font-bold text-red-800">4</p>
+                  <p className="text-3xl font-bold text-red-800">3</p>
                   <p className="text-gray-600">Categories</p>
-                </div>
-                <div className="bg-red-50 rounded-lg p-4 text-center">
-                  <p className="text-3xl font-bold text-red-800">2</p>
-                  <p className="text-gray-600">Classics</p>
                 </div>
                 <div className="bg-red-50 rounded-lg p-4 text-center">
                   <p className="text-3xl font-bold text-red-800">1</p>
@@ -159,7 +173,7 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Right Side (Quick Actions + Activity) */}
+         
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-semibold mb-4 text-gray-800">
@@ -167,11 +181,11 @@ const Profile = () => {
               </h2>
               <div className="space-y-3">
                 <button className="w-full flex items-center justify-between px-4 py-3 bg-red-50 text-red-800 rounded-lg hover:bg-red-100 transition-colors">
-                  <Link to={"/addbooks"}><span>Add New Book</span></Link>
+                  <Link to="/addbooks"><span>Add New Book</span></Link>
                   <FiBook />
                 </button>
                 <button className="w-full flex items-center justify-between px-4 py-3 bg-red-50 text-red-800 rounded-lg hover:bg-red-100 transition-colors">
-                  <Link to={"/mybooks"}><span>View Reading List</span></Link>
+                  <Link to="/mybooks"><span>View Reading List</span></Link>
                   <FiBook />
                 </button>
                 <button className="w-full flex items-center justify-between px-4 py-3 bg-red-50 text-red-800 rounded-lg hover:bg-red-100 transition-colors">
@@ -203,7 +217,7 @@ const Profile = () => {
                   </div>
                   <div>
                     <p className="text-gray-800">
-                      Started reading <span className="font-medium">Atomic Habits</span>
+                      Started reading <span className="font-medium">{readingBooks.book_title}</span>
                     </p>
                     <p className="text-sm text-gray-500">1 week ago</p>
                   </div>
