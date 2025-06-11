@@ -8,79 +8,136 @@ const ReviewsSection = ({ bookId }) => {
   const [reviews, setReviews] = useState([]);
   const { user } = useContext(AuthContext);
   const [newReview, setNewReview] = useState({ 
-    name: user?.displayName || "", 
     rating: 0, 
-    comment: "" 
+    review_text: "" 
   });
   const [editingId, setEditingId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Load reviews from localStorage (or API in a real app)
+  
   useEffect(() => {
-    const savedReviews = JSON.parse(localStorage.getItem(`bookReviews_${bookId}`)) || [];
-    setReviews(savedReviews);
+    const fetchReviews = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`http://localhost:3000/reviews`);
+        if (!response.ok) throw new Error('Failed to fetch reviews');
+        const data = await response.json();
+        setReviews(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReviews();
   }, [bookId]);
 
-  // Save reviews to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem(`bookReviews_${bookId}`, JSON.stringify(reviews));
-  }, [reviews, bookId]);
-
-  const handleSubmit = () => {
-    if (!newReview.name || !newReview.rating || !newReview.comment) return;
+  const handleSubmit = async () => {
+    if (!newReview.rating || !newReview.review_text) return;
     
-    if (editingId) {
-      // Update existing review
-      setReviews(prev => 
-        prev.map(review => 
-          review.id === editingId ? { ...newReview, id: editingId } : review
-        )
-      );
-      setEditingId(null);
-    } else {
-      // Add new review
-      // Check if user already has a review for this book
-      const existingReviewIndex = reviews.findIndex(r => r.userId === user?.uid);
-      if (existingReviewIndex >= 0) {
-        // Replace existing review
-        const updatedReviews = [...reviews];
-        updatedReviews[existingReviewIndex] = { 
-          ...newReview, 
-          id: reviews[existingReviewIndex].id,
-          userId: user?.uid 
-        };
-        setReviews(updatedReviews);
+    setIsLoading(true);
+    try {
+      if (editingId) {
+       
+        const response = await fetch(`http://localhost:3000/reviews/${editingId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_email: user.email,
+            review_text: newReview.review_text,
+            rating: newReview.rating
+          })
+        });
+        
+        if (!response.ok) throw new Error('Failed to update review');
+        
+        const updatedReview = await response.json();
+        setReviews(prev => 
+          prev.map(review => 
+            review._id === editingId ? updatedReview : review
+          )
+        );
+        setEditingId(null);
       } else {
-        // Add new review
-        setReviews(prev => [
-          ...prev, 
-          { 
-            ...newReview, 
-            id: Date.now(), 
-            userId: user?.uid 
-          }
-        ]);
+        // Check if user already has a review
+        const existingReview = reviews.find(r => r.user_email === user.email);
+        
+        if (existingReview) {
+          setEditingId(existingReview._id);
+          setNewReview({
+            rating: existingReview.rating,
+            review_text: existingReview.review_text
+          });
+          throw new Error('You can only submit one review per book');
+        }
+
+      
+        const response = await fetch('http://localhost:3000/reviews', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            book_id: bookId,
+            user_email: user.email,
+            review_text: newReview.review_text,
+            rating: newReview.rating
+          })
+        });
+        
+        if (!response.ok) throw new Error('Failed to create review');
+        
+        const createdReview = await response.json();
+        setReviews(prev => [...prev, createdReview]);
       }
+      
+      setNewReview({ rating: 0, review_text: "" });
+      document.getElementById("review_modal").close();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
-    
-    setNewReview({ name: user?.displayName || "", rating: 0, comment: "" });
-    document.getElementById("review_modal").close();
   };
 
   const handleEdit = (review) => {
     setNewReview({
-      name: review.name,
       rating: review.rating,
-      comment: review.comment
+      review_text: review.review_text
     });
-    setEditingId(review.id);
+    setEditingId(review._id);
     document.getElementById("review_modal").showModal();
   };
 
-  const handleDelete = (id) => {
-    setReviews(prev => prev.filter(review => review.id !== id));
+  const handleDelete = async (id) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`http://localhost:3000/reviews/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_email: user.email })
+      });
+      
+      if (!response.ok) throw new Error('Failed to delete review');
+      
+      setReviews(prev => prev.filter(review => review._id !== id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const userReview = reviews.find(review => review.userId === user?.uid);
+  const userReview = reviews.find(review => review.user_email === user?.email);
+
+  if (isLoading) return <div className="text-center py-8">Loading reviews...</div>;
+  if (error) return <div className="text-center py-8 text-red-600">Error: {error}</div>;
 
   return (
     <div className="px-4 py-8">
@@ -129,11 +186,7 @@ const ReviewsSection = ({ bookId }) => {
               if (userReview) {
                 handleEdit(userReview);
               } else {
-                setNewReview({ 
-                  name: user.displayName || "", 
-                  rating: 0, 
-                  comment: "" 
-                });
+                setNewReview({ rating: 0, review_text: "" });
                 setEditingId(null);
                 document.getElementById("review_modal").showModal();
               }
@@ -163,25 +216,27 @@ const ReviewsSection = ({ bookId }) => {
           <table className="table table-zebra">
             <thead>
               <tr className="text-lg text-red-800">
-                <th>Name</th>
+                <th>User</th>
                 <th>Rating</th>
-                <th>Comment</th>
+                <th>Review</th>
+                <th>Date</th>
                 {user && <th>Actions</th>}
               </tr>
             </thead>
             <tbody>
               {reviews.map((review) => (
-                <tr key={review.id}>
-                  <td>{review.name}</td>
+                <tr key={review._id}>
+                  <td>{review.user_email}</td>
                   <td className="flex gap-1">
                     {[...Array(review.rating)].map((_, i) => (
                       <FaStar key={i} className="text-amber-500" />
                     ))}
                   </td>
-                  <td>{review.comment}</td>
+                  <td>{review.review_text}</td>
+                  <td>{new Date(review.created_at).toLocaleDateString()}</td>
                   {user && (
                     <td>
-                      {review.userId === user.uid && (
+                      {review.user_email === user.email && (
                         <div className="flex gap-2">
                           <button 
                             onClick={() => handleEdit(review)}
@@ -190,7 +245,7 @@ const ReviewsSection = ({ bookId }) => {
                             <FaEdit />
                           </button>
                           <button 
-                            onClick={() => handleDelete(review.id)}
+                            onClick={() => handleDelete(review._id)}
                             className="btn btn-ghost btn-sm text-red-600"
                           >
                             <FaTrash />
@@ -218,10 +273,10 @@ const ReviewsSection = ({ bookId }) => {
           </h3>
 
           <textarea
-            placeholder="Write your comment"
+            placeholder="Write your review"
             className="textarea textarea-bordered w-full mb-3"
-            value={newReview.comment}
-            onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+            value={newReview.review_text}
+            onChange={(e) => setNewReview({ ...newReview, review_text: e.target.value })}
             rows={4}
           />
 
@@ -238,13 +293,16 @@ const ReviewsSection = ({ bookId }) => {
             ))}
           </div>
 
+          {error && <div className="text-red-600 mb-2">{error}</div>}
+
           <div className="modal-action">
             <form method="dialog" className="flex gap-2">
               <button 
                 className="btn btn-outline btn-neutral"
                 onClick={() => {
-                  setNewReview({ name: "", rating: 0, comment: "" });
+                  setNewReview({ rating: 0, review_text: "" });
                   setEditingId(null);
+                  setError(null);
                 }}
               >
                 Cancel
@@ -253,9 +311,9 @@ const ReviewsSection = ({ bookId }) => {
                 type="button" 
                 onClick={handleSubmit} 
                 className="btn btn-error text-white"
-                disabled={!newReview.rating || !newReview.comment}
+                disabled={!newReview.rating || !newReview.review_text || isLoading}
               >
-                {editingId ? "Update" : "Submit"}
+                {isLoading ? "Processing..." : editingId ? "Update" : "Submit"}
               </button>
             </form>
           </div>
