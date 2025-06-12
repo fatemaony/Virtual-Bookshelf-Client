@@ -1,7 +1,6 @@
-import { div } from "motion/react-client";
 import React, { useState, useEffect } from "react";
 import { CiSearch } from "react-icons/ci";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useSearchParams } from "react-router";
 import BookShelfCard from "../components/BookshelfCard";
 import { motion } from "framer-motion";
 import axios from "axios";
@@ -11,9 +10,19 @@ const Bookshelf = () => {
   const [books, setBooks] = useState(initialBooks);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [searchParams] = useSearchParams();
 
-  const fetchBooks = async (search = "", status = "") => {
+  useEffect(() => {
+    // Check for initial category from URL
+    const initialCategory = searchParams.get("category");
+    if (initialCategory) {
+      setSelectedCategory(initialCategory);
+    }
+  }, [searchParams]);
+
+  const fetchBooks = async (search = "", status = "", category = "") => {
     setIsLoading(true);
     try {
       let url = "http://localhost:3000/books";
@@ -24,6 +33,9 @@ const Bookshelf = () => {
       }
       if (status) {
         params.append("status", status);
+      }
+      if (category) {
+        params.append("category", category);
       }
       
       if (params.toString()) {
@@ -40,17 +52,16 @@ const Bookshelf = () => {
   };
 
   const handleSearch = () => {
-    fetchBooks(searchTerm, selectedStatus);
+    fetchBooks(searchTerm, selectedStatus, selectedCategory);
   };
 
- 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      fetchBooks(searchTerm, selectedStatus);
+      fetchBooks(searchTerm, selectedStatus, selectedCategory);
     }, 500); 
 
     return () => clearTimeout(timeoutId);
-  }, [searchTerm, selectedStatus]);
+  }, [searchTerm, selectedStatus, selectedCategory]);
 
   return (
     <div className="py-6 px-4">
@@ -85,16 +96,28 @@ const Bookshelf = () => {
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
-            <option value="">All Books</option>
+            <option value="">All Status</option>
             <option value="Read">Read</option>
             <option value="Reading">Reading</option>
             <option value="Want-to-Read">Want-to-Read</option>
+          </select>
+          <select 
+            name="book_category" 
+            className="select select-bordered"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value="">All Categories</option>
+            <option value="Fiction">Fiction</option>
+            <option value="Non-Fiction">Non-Fiction</option>
+            <option value="Fantasy">Fantasy</option>
           </select>
           <div className="indicator">
             <button 
               className="btn join-item bg-amber-800 text-white"
               onClick={handleSearch}
             >
+              <CiSearch className="text-xl" />
               Search
             </button>
           </div>

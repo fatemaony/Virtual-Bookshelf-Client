@@ -47,7 +47,7 @@ const BookShelfCard = ({ book, books, setBooks }) => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="card bg-white hover:shadow-xl rounded-2xl overflow-hidden border border-amber-200 hover:border-red-400 transition duration-300"
+      className="card bg-color-neutral hover:shadow-xl rounded-2xl overflow-hidden border border-amber-200 hover:border-red-400 transition duration-300"
     >
       <figure className="px-8 pt-8">
         <img

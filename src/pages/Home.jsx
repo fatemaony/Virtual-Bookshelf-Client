@@ -3,6 +3,7 @@ import Banner from "./Banner";
 import FAQ from "../components/FQA";
 import PopularBooks from "../components/PopularBooks";
 import BooksCategory from "../components/BooksCategory";
+import About from "../components/About";
 
 const Home=()=>{
 
@@ -11,6 +12,7 @@ const Home=()=>{
     <Banner/>
     <PopularBooks/>
     <BooksCategory/>
+    <About/>
     <FAQ/>
     </div>
   )

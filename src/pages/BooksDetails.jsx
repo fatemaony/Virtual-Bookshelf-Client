@@ -111,7 +111,7 @@ const BookDetails = () => {
   ];
 
   return (
-    <div className="bg-gradient-to-br from-yellow-50 to-pink-100 min-h-screen py-10 px-4 lg:px-20">
+    <div className="bg-base-100 min-h-screen py-10 px-4 lg:px-20">
       <div className="container mx-auto">
         <motion.div
           className="flex flex-col lg:flex-row items-center gap-10 bg-white/80 backdrop-blur-md p-6 lg:p-10 rounded-2xl shadow-xl"
@@ -236,7 +236,7 @@ const BookDetails = () => {
               </p>
             </div>
 
-            <button className="btn bg-red-900 hover:bg-red-800 text-white">
+            <button className="btn bg-primary hover:bg-primary-focus text-primary-content">
               Read More
             </button>
           </motion.div>
