@@ -4,11 +4,15 @@ import BookShelfCard from "./BookshelfCard";
 
 const PopularBooks = () => {
   const initialBooks = useLoaderData();
-
-  // Sort books by upvote in descending order and take top 6
+  
+  
   const topBooks = [...initialBooks]
-    .sort((a, b) => b.upvote - a.upvote)
-    .slice(0, 6);
+    .sort((a, b) => {
+      const aUpvotes = a.upvotes?.length || 0;
+      const bUpvotes = b.upvotes?.length || 0;
+      return bUpvotes - aUpvotes; 
+    })
+    .slice(0, 6); 
 
   const [books, setBooks] = useState(topBooks);
 

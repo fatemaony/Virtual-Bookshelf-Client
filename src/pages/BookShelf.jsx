@@ -43,11 +43,11 @@ const Bookshelf = () => {
     fetchBooks(searchTerm, selectedStatus);
   };
 
-  // Auto-search when filters change (optional - you can remove this if you prefer only manual search)
+ 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       fetchBooks(searchTerm, selectedStatus);
-    }, 500); // Debounce for 500ms
+    }, 500); 
 
     return () => clearTimeout(timeoutId);
   }, [searchTerm, selectedStatus]);

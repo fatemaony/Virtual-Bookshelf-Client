@@ -11,7 +11,9 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Profile = () => {
   const myBooks = useLoaderData();
+  const {book_title, book_category, reading_status}= myBooks
   const { user, signOutUser } = useContext(AuthContext);
+
   const userEmail = user?.email;
 
   const [currentBooks] = useState(myBooks);
@@ -217,8 +219,10 @@ const Profile = () => {
                   </div>
                   <div>
                     <p className="text-gray-800">
-                      Started reading <span className="font-medium">Atomic habit</span>
+                       Started reading <span className="font-medium">
+                       {readingBooks?.book_title ? readingBooks.book_title : "There are no books"}</span>
                     </p>
+
                     <p className="text-sm text-gray-500">1 week ago</p>
                   </div>
                 </div>

@@ -7,7 +7,7 @@ const useBookUpvote = () => {
   const [isUpvoting, setIsUpvoting] = useState(false);
 
   const upvoteBook = useCallback(async (bookId, book, onSuccess) => {
-    // Check if user is authenticated
+ 
     if (!user) {
       Swal.fire({
         title: 'Authentication Required!',
@@ -20,23 +20,23 @@ const useBookUpvote = () => {
         cancelButtonColor: '#6b7280'
       }).then((result) => {
         if (result.isConfirmed) {
-          // Redirect to sign in page
+         
           window.location.href = '/signin';
         }
       });
       return;
     }
 
-    if (book.addedBy === user.email) {
-      Swal.fire({
-        title: 'Cannot Upvote Own Book!',
-        text: 'You cannot upvote a book that you added yourself.',
-        icon: 'info',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#950d0b'
-      });
-      return;
-    }
+   if (book.addedBy === user.email) {
+  Swal.fire({
+    title: 'Cannot Upvote Own Book!',
+    text: 'You cannot upvote a book that you added yourself.',
+    icon: 'info',
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#950d0b'
+  });
+  return;
+}
 
     setIsUpvoting(true);
 
@@ -59,12 +59,11 @@ const useBookUpvote = () => {
 
       const updatedBook = await response.json();
       
-      // Call success callback to update UI
       if (onSuccess) {
         onSuccess(updatedBook);
       }
 
-      // Show success message
+      
       Swal.fire({
         title: 'Book Upvoted! ❤️',
         text: `You've shown love for "${book.book_title}"!`,

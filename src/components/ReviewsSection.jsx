@@ -188,11 +188,11 @@ const ReviewsSection = ({ bookId }) => {
         )}
       </div>
 
-      {error && !document.getElementById("review_modal").open && (
+      {/* {error  && !document.getElementById("review_modal")?.open && (
         <div className="alert alert-error mb-4 max-w-4xl mx-auto">
           <span>{error}</span>
         </div>
-      )}
+      )} */}
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
