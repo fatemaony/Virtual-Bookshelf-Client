@@ -29,7 +29,7 @@ const BooksCategory = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="max-w-6xl mx-auto lg:px-12 px-4 py-12">
       <motion.h1
         className="text-4xl font-bold text-center text-red-800 mb-12"
         initial={{ opacity: 0, y: -40 }}

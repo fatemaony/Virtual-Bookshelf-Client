@@ -75,9 +75,9 @@ const FAQ = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8, duration: 0.5 }}
-        className="mt-12 text-center bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl"
+        className="mt-12 text-center bg-base-200 p-6 rounded-xl"
       >
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+        <h3 className="text-xl font-semibold text-black mb-2">
           Still have questions?
         </h3>
         <p className="text-gray-600 mb-4">

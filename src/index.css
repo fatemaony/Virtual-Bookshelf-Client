@@ -14,7 +14,7 @@
 
   --color-base-100: #fffbeb; 
   --color-base-200: #fef3c7;
-  --color-base-300: #f7f9fa;
+  --color-base-300: black;
   --color-base-400: #f7f9fa;
   --color-base-content: #000000;
 
@@ -29,6 +29,7 @@
 
   --color-neutral: #000000;
   --color-neutral-content: #ffffff;
+  --color-black:#000000
 
   
   --color-info: #3abff8;
@@ -55,7 +56,7 @@
 
   --color-base-200: #2a3c3c;
 
-  --color-base-300: black;
+  --color-base-300: #f7f9fa;
 
   --color-base-400: #1d2a2c;
 
@@ -86,6 +87,7 @@
   --color-neutral: white;
 
   --color-neutral-content: #ffffff;
+  --color-black: #000000;
 
 
 

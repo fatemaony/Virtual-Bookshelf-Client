@@ -103,10 +103,10 @@ const useBookUpvote = () => {
   }, [user]);
 
   const canUserUpvote = useCallback((book) => {
-    if (!user) return false;
-    if (book.addedBy === user.email) return false;
-    return true;
-  }, [user]);
+  if (!user) return false;
+  if (book.addedBy === user.email) return false;
+  return true;
+}, [user]);
 
   const getUpvoteButtonText = useCallback((book) => {
     if (!user) return 'Sign in to upvote';

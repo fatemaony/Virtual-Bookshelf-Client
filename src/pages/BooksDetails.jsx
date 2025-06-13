@@ -119,7 +119,7 @@ const BookDetails = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Book Cover Section */}
+       
           <motion.div
             className="flex flex-col items-center w-full lg:w-auto"
             whileHover={{ scale: 1.02 }}
@@ -161,22 +161,22 @@ const BookDetails = () => {
               <span className="loading loading-spinner loading-sm mt-2"></span>
             )}
 
-            {/* ✅ Reading Tracker UI */}
-            <div className="mt-8 w-full max-w-sm">
+          
+            <div className="mt-8  w-full max-w-sm">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="steps steps-vertical lg:steps-horizontal w-full"
+                className="steps steps-vertical lg:steps-horizontal  w-full"
               >
                 <div className={`step ${["Want-to-Read", "Reading", "Read"].includes(reading_status) ? "step-primary" : ""}`}>
-                  <span className="text-sm font-semibold">Want to Read</span>
+                  <span className="text-sm text-black font-semibold">Want to Read</span>
                 </div>
                 <div className={`step ${["Reading", "Read"].includes(reading_status) ? "step-primary" : ""}`}>
-                  <span className="text-sm font-semibold">Reading</span>
+                  <span className="text-sm text-black font-semibold">Reading</span>
                 </div>
                 <div className={`step ${reading_status === "Read" ? "step-primary" : ""}`}>
-                  <span className="text-sm font-semibold">Read</span>
+                  <span className="text-sm text-black font-semibold">Read</span>
                 </div>
               </motion.div>
             </div>
@@ -197,9 +197,9 @@ const BookDetails = () => {
               {book_author}
             </p>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex text-black flex-wrap gap-4">
               <p className="badge badge-outline">
-                <span className="font-semibold">Category:</span> {book_category}
+                <span className="font-semibold ">Category:</span> {book_category}
               </p>
               <p className="badge badge-outline">
                 <span className="font-semibold">Pages:</span> {total_page}

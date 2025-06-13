@@ -63,12 +63,12 @@ const UpdateBookForm = () => {
 
   return (
     <motion.div 
-      className="hero bg-gradient-to-br from-orange-50 to-white min-h-screen py-10"
+      className="hero bg-base-200 min-h-screen py-10"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <div className="card bg-white shadow-xl rounded-2xl w-full max-w-5xl mx-auto p-6">
+      <div className="card bg-base-100 shadow-xl rounded-2xl w-full max-w-5xl mx-auto p-6">
         <div className="card-body">
           <h1 className="text-3xl font-bold text-center text-[#a94906] flex items-center justify-center gap-2">
             <FaEdit /> Update Book Info
@@ -144,7 +144,7 @@ const UpdateBookForm = () => {
                   name="user_email" 
                   defaultValue={book.user_email} 
                   readOnly 
-                  className="input input-bordered w-full bg-gray-100" 
+                  className="input input-bordered w-full bg-base-200" 
                 />
               </div>
 
@@ -155,7 +155,7 @@ const UpdateBookForm = () => {
                   name="user_name" 
                   defaultValue={book.user_name} 
                   readOnly 
-                  className="input input-bordered w-full bg-gray-100" 
+                  className="input input-bordered w-full bg-base-200" 
                 />
               </div>
 

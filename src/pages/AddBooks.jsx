@@ -86,7 +86,7 @@ const AddBooks = () => {
                   name="user_email"
                   value={user.email}
                   readOnly
-                  className="input input-bordered w-full bg-gray-100"
+                  className="input input-bordered w-full bg-base-200"
                 />
               </div>
 
@@ -97,7 +97,7 @@ const AddBooks = () => {
                   name="user_name"
                   value={user.displayName}
                   readOnly
-                  className="input input-bordered w-full bg-gray-100"
+                  className="input input-bordered w-full bg-base-200"
                 />
               </div>
 
@@ -117,7 +117,7 @@ const AddBooks = () => {
                   name="upvote"
                   value="0"
                   readOnly
-                  className="input input-bordered w-full bg-gray-100"
+                  className="input input-bordered w-full bg-base-200"
                 />
               </div>
 

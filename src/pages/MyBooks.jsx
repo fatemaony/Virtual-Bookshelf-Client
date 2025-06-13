@@ -80,7 +80,7 @@ const MyBooks = () => {
   return (
     <div className="overflow-x-auto p-6">
       <h1 className="text-3xl font-bold text-center text-red-800 mb-6">📚 My Book Collection</h1>
-      <table className="min-w-full bg-white shadow rounded-lg overflow-hidden">
+      <table className="min-w-full bg-white/80 backdrop-blur-md shadow rounded-lg overflow-hidden">
         <thead className="bg-red-800 text-white">
           <tr>
             <th className="py-3 px-4 text-left">Cover</th>
@@ -104,7 +104,7 @@ const MyBooks = () => {
                   />
                 </td>
                 <td className="py-3 px-4 ">
-                  <h1 className="font-bold text-xl">{book.book_title}</h1>
+                  <h1 className="font-bold text-black  text-xl">{book.book_title}</h1>
                   <p className="text-gray-600">{book.book_author}</p>
                 </td>
                 
