@@ -30,8 +30,8 @@ const EditProfile = () => {
 
   const updateProfileInBackend = async (profileData) => {
     try {
-      const response = await fetch(`http://localhost:3000/users/${user.email}`, {
-        method: 'PUT',
+      const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/users/${user.email}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },

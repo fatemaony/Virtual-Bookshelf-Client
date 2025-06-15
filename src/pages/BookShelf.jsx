@@ -25,7 +25,7 @@ const Bookshelf = () => {
   const fetchBooks = async (search = "", status = "", category = "") => {
     setIsLoading(true);
     try {
-      let url = "http://localhost:3000/books";
+      let url = "https://virtual-bookshelf-server-chi.vercel.app/books";
       const params = new URLSearchParams();
       
       if (search.trim()) {

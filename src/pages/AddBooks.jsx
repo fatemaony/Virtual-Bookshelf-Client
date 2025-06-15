@@ -4,8 +4,9 @@ import { AuthContext } from "../contexts/Context";
 import Swal from "sweetalert2";
 
 const AddBooks = () => {
-  const {user}= use(AuthContext)
-  const handleAddBook=(e)=>{
+  const {user,getFirebaseToken,}= use(AuthContext)
+  
+  const handleAddBook=async(e)=>{
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
@@ -13,11 +14,12 @@ const AddBooks = () => {
     console.log(newBook)
 
     //send to the server 
-
-    fetch('http://localhost:3000/books',{
+     
+    fetch('https://virtual-bookshelf-server-chi.vercel.app/books',{
       method:"POST",
       headers:{
-        'content-type':'application/json'
+        'content-type':'application/json',
+        
       },
       body:JSON.stringify(newBook)
     })

@@ -7,14 +7,14 @@ import { updateProfile } from "firebase/auth";
 import Swal from "sweetalert2";
 
 const Register = () => {
-  const { signInWithGoogle, createUser } = use(AuthContext);
+  
+  const { signInWithGoogle, createUser,  getFirebaseToken,} = use(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state || "/"
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
     const form = e.target;
     const displayName = form.displayName.value;
     const email = form.email.value;
@@ -32,10 +32,12 @@ const Register = () => {
       return;
     }
 
-    if (password.length < 6) {
+    
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+    if (!passwordRegex.test(password)) {
       Swal.fire({
-        title: 'Weak Password!',
-        text: 'Password must be at least 6 characters long.',
+        title: 'Invalid Password!',
+        text: 'Password must be at least 6 characters long and include both uppercase and lowercase letters.',
         icon: 'warning',
         confirmButtonText: 'OK',
         confirmButtonColor: '#dc2626'
@@ -44,16 +46,16 @@ const Register = () => {
     }
 
     try {
+      
       const result = await createUser(email, password);
       console.log("Created an account", result.user);
+       const token = await result.user.getIdToken();
       
-      // Update Firebase profile
       await updateProfile(result.user, {
         displayName: displayName,
         photoURL: photo 
       });
 
-     
       const userProfile = {
         email: result.user.email,
         Name: displayName, 
@@ -66,12 +68,13 @@ const Register = () => {
       };
 
       console.log("User profile to save:", userProfile);
+     
 
-      // Save user to database
-      const response = await fetch('http://localhost:3000/users', {
+      const response = await fetch('https://virtual-bookshelf-server-chi.vercel.app/users', {
         method: "POST",
         headers: {
-          'content-type': 'application/json'
+          'content-type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(userProfile)
       });
@@ -115,10 +118,11 @@ const Register = () => {
 
   const handleSignInWithGoogle = async () => {
     try {
+     
       const result = await signInWithGoogle();
       console.log("Sign in with Google", result.user);
+       const token = await result.user.getIdToken();
 
-  
       const userProfile = {
         email: result.user.email,
         Name: result.user.displayName,
@@ -131,12 +135,12 @@ const Register = () => {
         provider: 'google'
       };
 
-   
       try {
-        await fetch('http://localhost:3000/users', {
+        await fetch('https://virtual-bookshelf-server-chi.vercel.app/users', {
           method: "POST",
           headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify(userProfile)
         });
@@ -144,8 +148,7 @@ const Register = () => {
         console.log("User might already exist in database");
       }
 
-
-      await fetch(`http://localhost:3000/users/${result.user.email}/login`, {
+      await fetch(`https://virtual-bookshelf-server-chi.vercel.app/users/${result.user.email}/login`, {
         method: "PATCH",
         headers: {
           'content-type': 'application/json'

@@ -6,7 +6,7 @@ import { AuthContext } from "../contexts/Context";
 import Swal from "sweetalert2";
 
 const SignIn = () => {
-  const { SignInWithEmail, signInWithGoogle } = use(AuthContext);
+  const { SignInWithEmail, signInWithGoogle, getFirebaseToken } = use(AuthContext);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -32,13 +32,15 @@ const SignIn = () => {
     try {
       const result = await SignInWithEmail(email, password);
       console.log("Sign in successfully", result.user);
+       const token = await result.user.getIdToken();
 
       
       try {
-        await fetch(`http://localhost:3000/users/${result.user.email}/login`, {
+        await fetch(`https://virtual-bookshelf-server-chi.vercel.app/users/${result.user.email}/login`, {
           method: "PATCH",
           headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            'Authorization': `Bearer ${token}`
           }
         });
       } catch (dbError) {
@@ -93,12 +95,13 @@ const SignIn = () => {
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithGoogle();
+     
       console.log("Google sign in successfully", result.user);
 
       
       let userExists = false;
       try {
-        const userResponse = await fetch(`http://localhost:3000/users/${result.user.email}`);
+        const userResponse = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/users/${result.user.email}`);
         userExists = userResponse.ok;
       } catch (error) {
         console.log("Error checking user existence:", error);
@@ -119,10 +122,11 @@ const SignIn = () => {
         };
 
         try {
-          await fetch('http://localhost:3000/users', {
+          await fetch('https://virtual-bookshelf-server-chi.vercel.app/users', {
             method: "POST",
             headers: {
-              'content-type': 'application/json'
+              'content-type': 'application/json',
+              'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(userProfile)
           });
@@ -134,7 +138,7 @@ const SignIn = () => {
       } else {
        
         try {
-          await fetch(`http://localhost:3000/users/${result.user.email}/login`, {
+          await fetch(`https://virtual-bookshelf-server-chi.vercel.app/users/${result.user.email}/login`, {
             method: "PATCH",
             headers: {
               'content-type': 'application/json'

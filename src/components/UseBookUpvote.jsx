@@ -41,8 +41,8 @@ const useBookUpvote = () => {
     setIsUpvoting(true);
 
     try {
-      const response = await fetch(`http://localhost:3000/books/${bookId}/upvote`, {
-        method: 'POST',
+      const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/books/${bookId}/upvote`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },

@@ -17,7 +17,7 @@ const ReviewsSection = ({ bookId }) => {
       if (!bookId) return;
       setIsLoading(true);
       try {
-        const response = await fetch(`http://localhost:3000/reviews?book_id=${bookId}`);
+        const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/reviews?book_id=${bookId}`);
         if (!response.ok) throw new Error('Failed to fetch reviews');
         const data = await response.json();
         setReviews(data);
@@ -39,7 +39,7 @@ const ReviewsSection = ({ bookId }) => {
     setError(null);
     try {
       if (editingId) {
-        const response = await fetch(`http://localhost:3000/reviews/${editingId}`, {
+        const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/reviews/${editingId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -55,7 +55,7 @@ const ReviewsSection = ({ bookId }) => {
         setReviews(prev => prev.map(review => review._id === editingId ? updatedReview : review));
         setEditingId(null);
       } else {
-        const response = await fetch('http://localhost:3000/reviews', {
+        const response = await fetch('https://virtual-bookshelf-server-chi.vercel.app/reviews', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -95,7 +95,7 @@ const ReviewsSection = ({ bookId }) => {
     if (!window.confirm("Are you sure you want to delete this review?")) return;
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:3000/reviews/${id}`, {
+      const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/reviews/${id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
       });

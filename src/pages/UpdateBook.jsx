@@ -28,7 +28,7 @@ const UpdateBookForm = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:3000/books/${book._id}`, {
+      const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/books/${book._id}`, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json'

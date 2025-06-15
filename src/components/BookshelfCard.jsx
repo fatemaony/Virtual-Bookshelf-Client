@@ -1,46 +1,42 @@
 import React from "react";
 import { FaHeart, FaBookOpen } from "react-icons/fa";
-import { Link } from "react-router";
+import { Link } from "react-router"; // Corrected import
 import { motion } from "framer-motion";
-import useBookUpvote from "../components/UseBookUpvote"; // Adjust path as needed
+import useBookUpvote from "../components/UseBookUpvote";
 
 const BookShelfCard = ({ book, books, setBooks }) => {
   const {
     _id,
     book_category,
-    upvote,
-    book_overview,
     book_author,
     cover_photo,
     book_title,
-    reading_status
+    reading_status,
   } = book;
 
   const {
     upvoteBook,
     getUpvoteCount,
     hasUserUpvoted,
-    getUpvoteButtonText,
-    getUpvoteButtonClass,
-    isUpvoting
+    isUpvoting,
+    canUserUpvote
   } = useBookUpvote();
 
+
   const handleUpvote = async (e) => {
-    e.preventDefault(); 
-    e.stopPropagation(); 
-    
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!canUserUpvote(book)) return;
+
     await upvoteBook(_id, book, (updatedBook) => {
-     
       if (setBooks && books) {
-        setBooks(books.map(b => 
-          b._id === _id ? { ...b, upvote: updatedBook.upvote, upvotes: updatedBook.upvotes } : b
+        setBooks(books.map(b =>
+          b._id === _id ? updatedBook : b
         ));
       }
     });
   };
-
-
-  const displayUpvoteCount = book.upvotes ? getUpvoteCount(book) : upvote;
 
   return (
     <motion.div
@@ -54,6 +50,9 @@ const BookShelfCard = ({ book, books, setBooks }) => {
           src={cover_photo}
           alt={book_title}
           className="rounded-xl h-64 w-52 object-cover shadow-lg"
+          onError={(e) => {
+            e.target.src = "/default-book-cover.jpg";
+          }}
         />
       </figure>
 
@@ -61,20 +60,21 @@ const BookShelfCard = ({ book, books, setBooks }) => {
         <span className="badge badge-warning text-white px-3 py-1 font-semibold shadow-md">
           {book_author}
         </span>
-        <button 
+        <button
           onClick={handleUpvote}
-          disabled={isUpvoting}
-          className={`flex items-center gap-1 text-sm px-3 py-1 rounded-full transition ${
-            hasUserUpvoted(book) 
-              ? 'bg-red-600 text-white hover:bg-red-700' 
-              : 'bg-red-100 text-red-800 hover:bg-red-200'
-          }`}
+          disabled={isUpvoting || !canUserUpvote(book)}
+          className={`flex items-center gap-1 text-sm px-3 py-1 rounded-full transition ${hasUserUpvoted(book)
+              ? 'bg-red-600 text-white hover:bg-red-700'
+              : canUserUpvote(book)
+                ? 'bg-red-100 text-red-800 hover:bg-red-200'
+                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            }`}
         >
           {isUpvoting ? (
             <span className="loading loading-spinner loading-xs"></span>
           ) : (
             <>
-              {displayUpvoteCount} <FaHeart className={`${hasUserUpvoted(book) ? 'text-white' : 'text-red-600'}`} />
+              {getUpvoteCount(book)} <FaHeart className={`${hasUserUpvoted(book) ? 'text-white' : 'text-red-600'}`} />
             </>
           )}
         </button>

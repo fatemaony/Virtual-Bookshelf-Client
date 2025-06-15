@@ -23,22 +23,22 @@ export const router = createBrowserRouter([
       {
         index:true,
         Component:Home,
-        loader:()=>fetch("http://localhost:3000/books")
+        loader:()=>fetch("https://virtual-bookshelf-server-chi.vercel.app/books")
       },
       {
         path:"/bookshelf",
         Component:Bookshelf,
-        loader:()=>fetch('http://localhost:3000/books')
+        loader:()=>fetch('https://virtual-bookshelf-server-chi.vercel.app/books')
       },
       {
        path:"/bookshelf/:id",
        Component:BookDetails,
-       loader:({params})=>fetch(`http://localhost:3000/books/${params.id}`)
+       loader:({params})=>fetch(`https://virtual-bookshelf-server-chi.vercel.app/books/${params.id}`)
       },
       {
         path:"/updatebook/:id",
         Component:UpdateBookForm,
-        loader:({params})=>fetch(`http://localhost:3000/books/${params.id}`)
+        loader:({params})=>fetch(`https://virtual-bookshelf-server-chi.vercel.app/books/${params.id}`)
       },
       {
         path:"editprofile",
@@ -50,7 +50,7 @@ export const router = createBrowserRouter([
         <PrivateRouter>
          <MyBooks/>
         </PrivateRouter>,
-        loader:()=>fetch("http://localhost:3000/books")
+        loader:()=>fetch("https://virtual-bookshelf-server-chi.vercel.app/books")
       },
       {
         path:"addbooks",
@@ -73,7 +73,7 @@ export const router = createBrowserRouter([
         <PrivateRouter>
          <Profile/>
         </PrivateRouter>,
-        loader:()=>fetch("http://localhost:3000/books")
+        loader:()=>fetch("https://virtual-bookshelf-server-chi.vercel.app/books")
       }
     ]
   },

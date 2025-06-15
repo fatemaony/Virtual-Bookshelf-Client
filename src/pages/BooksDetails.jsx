@@ -1,5 +1,5 @@
 import React, { use, useState } from "react";
-import { useLoaderData } from "react-router";
+import { useLoaderData } from "react-router"; // Corrected import
 import { FaHeart } from "react-icons/fa";
 import { motion } from "framer-motion";
 import useBookUpvote from "../components/UseBookUpvote";
@@ -38,12 +38,7 @@ const BookDetails = () => {
   const handleUpvote = async () => {
     try {
       await upvoteBook(_id, bookdata, (updatedBook) => {
-        setBookdata(prev => ({
-          ...prev,
-          upvote: updatedBook.upvote,
-          upvotes: updatedBook.upvotes
-        }));
-        toast.success("Book upvoted successfully!");
+        setBookdata(updatedBook);
       });
     } catch (error) {
       toast.error("Failed to upvote book");
@@ -64,17 +59,18 @@ const BookDetails = () => {
     };
 
     if (validTransitions[reading_status] !== newStatus &&
-        reading_status !== newStatus) {
+      reading_status !== newStatus) {
       toast.warning(`Invalid status transition from ${reading_status} to ${newStatus}`);
       return;
     }
 
     setIsUpdatingStatus(true);
     try {
-      const response = await fetch(`http://localhost:3000/books/${_id}/reading-status`, {
+      const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/books/${_id}/reading-status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          // Assuming you have a way to get the token
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
@@ -102,8 +98,6 @@ const BookDetails = () => {
     }
   };
 
-  const displayUpvoteCount = bookdata.upvotes ? getUpvoteCount(bookdata) : upvote;
-
   const statusOptions = [
     { value: "Want-to-Read", label: "Want to Read" },
     { value: "Reading", label: "Reading" },
@@ -119,7 +113,6 @@ const BookDetails = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-       
           <motion.div
             className="flex flex-col items-center w-full lg:w-auto"
             whileHover={{ scale: 1.02 }}
@@ -161,7 +154,6 @@ const BookDetails = () => {
               <span className="loading loading-spinner loading-sm mt-2"></span>
             )}
 
-          
             <div className="mt-8  w-full max-w-sm">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -182,7 +174,6 @@ const BookDetails = () => {
             </div>
           </motion.div>
 
-          {/* Book Info Section */}
           <motion.div
             className="text-left space-y-4 w-full max-w-xl"
             initial={{ opacity: 0, x: -40 }}
@@ -210,12 +201,13 @@ const BookDetails = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleUpvote}
-              disabled={isUpvoting}
-              className={`flex items-center gap-2 btn btn-sm transition ${
-                hasUserUpvoted(bookdata)
+              disabled={isUpvoting || isOwner}
+              className={`flex items-center gap-2 btn btn-sm transition ${hasUserUpvoted(bookdata)
                   ? 'bg-red-300 text-red-700 border-red-700'
-                  : 'bg-pink-100 text-red-900 border-red-300 hover:bg-red-200'
-              }`}
+                  : isOwner
+                    ? 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed'
+                    : 'bg-pink-100 text-red-900 border-red-300 hover:bg-red-200'
+                }`}
             >
               {isUpvoting ? (
                 <>
@@ -224,7 +216,7 @@ const BookDetails = () => {
                 </>
               ) : (
                 <>
-                  {displayUpvoteCount} <FaHeart className="text-red-500" />
+                  {getUpvoteCount(bookdata)} <FaHeart className="text-red-500" />
                 </>
               )}
             </motion.button>
@@ -243,7 +235,6 @@ const BookDetails = () => {
         </motion.div>
       </div>
 
-      {/* Reviews Section */}
       <div className="container mx-auto py-10">
         <ReviwsSection bookId={_id} />
       </div>

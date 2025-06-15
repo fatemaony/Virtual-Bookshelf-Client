@@ -16,9 +16,10 @@ const AuthProvider =({children})=>{
   const [user, setUser]=useState(null)
  
   // create user with email
-  const createUser=(email, password)=>{
+  const createUser=async(email, password)=>{
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
+    
   }
 
   const signInWithGoogle=()=>{
@@ -31,6 +32,13 @@ const AuthProvider =({children})=>{
     return signInWithEmailAndPassword(auth, email, password)
 
   }
+  const getFirebaseToken = async () => {
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    return currentUser.getIdToken(true);
+  }
+  return null;
+};
 
 
   //sign out
@@ -56,7 +64,8 @@ const AuthProvider =({children})=>{
     createUser,
     signInWithGoogle,
     SignInWithEmail,
-    signOutUser
+    signOutUser,
+    getFirebaseToken,
   }
 
 
