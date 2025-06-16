@@ -1,13 +1,12 @@
-import { useState, useCallback, use } from 'react';
+import { useState, useCallback, useContext } from 'react';
 import { AuthContext } from '../contexts/Context';
 import Swal from 'sweetalert2';
 
 const useBookUpvote = () => {
-  const { user } = use(AuthContext);
+  const { user } = useContext(AuthContext);
   const [isUpvoting, setIsUpvoting] = useState(false);
 
-  const upvoteBook = useCallback(async (bookId, book, onSuccess) => {
- 
+  const upvoteBook = useCallback(async (_Id, book, onSuccess) => {
     if (!user) {
       Swal.fire({
         title: 'Authentication Required!',
@@ -20,50 +19,49 @@ const useBookUpvote = () => {
         cancelButtonColor: '#6b7280'
       }).then((result) => {
         if (result.isConfirmed) {
-         
           window.location.href = '/signin';
         }
       });
       return;
     }
 
-   if (book.addedBy === user.email) {
-  Swal.fire({
-    title: 'Cannot Upvote Own Book!',
-    text: 'You cannot upvote a book that you added yourself.',
-    icon: 'info',
-    confirmButtonText: 'OK',
-    confirmButtonColor: '#950d0b'
-  });
-  return;
-}
+    if (book.user_email === user.email) {
+      Swal.fire({
+        title: 'Cannot Upvote Own Book!',
+        text: 'You cannot upvote a book that you added yourself.',
+        icon: 'info',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#950d0b'
+      });
+      return;
+    }
 
     setIsUpvoting(true);
 
     try {
-      const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/books/${bookId}/upvote`, {
-        method: 'PATCH',
+      const token = await user.getIdToken(); 
+      const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/books/${_Id}/upvote`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          userEmail: user.email,
           userName: user.displayName || 'Anonymous User'
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to upvote book');
+        throw new Error(data.error || 'Failed to upvote book');
       }
 
-      const updatedBook = await response.json();
-      
-      if (onSuccess) {
-        onSuccess(updatedBook);
+     
+      if (onSuccess && data.book) {
+        onSuccess(data.book);
       }
 
-      
       Swal.fire({
         title: 'Book Upvoted! ❤️',
         text: `You've shown love for "${book.book_title}"!`,
@@ -72,11 +70,10 @@ const useBookUpvote = () => {
         timerProgressBar: true,
         showConfirmButton: false,
         toast: true,
-        position: 'top-end',
-        customClass: {
-          popup: 'animate__animated animate__fadeInDown'
-        }
+        position: 'top-end'
       });
+
+      return data.book;
 
     } catch (error) {
       console.error('Error upvoting book:', error);
@@ -88,59 +85,41 @@ const useBookUpvote = () => {
         confirmButtonText: 'OK',
         confirmButtonColor: '#dc2626'
       });
+      throw error;
     } finally {
       setIsUpvoting(false);
     }
   }, [user]);
 
-  const getUpvoteCount = useCallback((book) => {
-    return book.upvotes?.length || 0;
+  const getUpvoteCount = useCallback((bookOrUpvotes) => {
+  
+    if (typeof bookOrUpvotes === 'number') {
+      return bookOrUpvotes;
+    }
+    
+   
+    if (bookOrUpvotes && typeof bookOrUpvotes === 'object') {
+     
+      if (bookOrUpvotes.upvote !== undefined) {
+        return Number(bookOrUpvotes.upvote) || 0;
+      }
+     
+      if (Array.isArray(bookOrUpvotes.upvotes)) {
+        return bookOrUpvotes.upvotes.length;
+      }
+      
+      if (Array.isArray(bookOrUpvotes)) {
+        return bookOrUpvotes.length;
+      }
+    }
+    
+    return 0;
   }, []);
-
-  const hasUserUpvoted = useCallback((book) => {
-    if (!user || !book.upvotes) return false;
-    return book.upvotes.some(upvote => upvote.userEmail === user.email);
-  }, [user]);
-
-  const canUserUpvote = useCallback((book) => {
-  if (!user) return false;
-  if (book.addedBy === user.email) return false;
-  return true;
-}, [user]);
-
-  const getUpvoteButtonText = useCallback((book) => {
-    if (!user) return 'Sign in to upvote';
-    if (book.addedBy === user.email) return 'Your book';
-    return hasUserUpvoted(book) ? 'Upvoted' : 'Upvote';
-  }, [user, hasUserUpvoted]);
-
-  const getUpvoteButtonClass = useCallback((book) => {
-    const baseClass = 'btn btn-sm transition-all duration-200 ';
-    
-    if (!user) {
-      return baseClass + 'btn-outline btn-neutral opacity-70';
-    }
-    
-    if (book.addedBy === user.email) {
-      return baseClass + 'btn-disabled opacity-50';
-    }
-    
-    if (hasUserUpvoted(book)) {
-      return baseClass + 'btn-error text-white bg-red-600 hover:bg-red-700 border-red-600';
-    }
-    
-    return baseClass + 'btn-outline btn-error hover:btn-error hover:text-white border-red-600 text-red-600';
-  }, [user, hasUserUpvoted]);
 
   return {
     upvoteBook,
     getUpvoteCount,
-    hasUserUpvoted,
-    canUserUpvote,
-    getUpvoteButtonText,
-    getUpvoteButtonClass,
-    isUpvoting,
-    isAuthenticated: !!user
+    isUpvoting
   };
 };
 

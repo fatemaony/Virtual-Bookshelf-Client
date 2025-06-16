@@ -53,7 +53,7 @@ return(
   <div className="navbar-end flex gap-2">
 
     <label className="swap swap-rotate">
-  {/* this hidden checkbox controls the state */}
+  
   <input type="checkbox" className="theme-controller" value="forest" />
 
   {/* sun icon */}

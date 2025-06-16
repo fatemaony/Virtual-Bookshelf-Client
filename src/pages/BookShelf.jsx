@@ -15,7 +15,7 @@ const Bookshelf = () => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    // Check for initial category from URL
+    
     const initialCategory = searchParams.get("category");
     if (initialCategory) {
       setSelectedCategory(initialCategory);
@@ -64,12 +64,12 @@ const Bookshelf = () => {
   }, [searchTerm, selectedStatus, selectedCategory]);
 
   return (
-    <div className="py-6 px-4">
+    <div className="py-4 sm:py-6 px-2 sm:px-4">
       <motion.h1
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4 }}
-        className="text-4xl font-extrabold text-center text-red-900 drop-shadow-sm"
+        className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-center text-red-900 drop-shadow-sm px-2"
       >
         Explore Books Tailored to Your Interests
       </motion.h1>
@@ -77,22 +77,19 @@ const Bookshelf = () => {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
-        className="justify-center flex lg:flex-row flex-col items-center gap-5 mt-6"
+        className="flex flex-col lg:flex-row justify-center items-center gap-3 sm:gap-5 mt-4 sm:mt-6"
       >
-        <div className="join">
-          <div>
-            <div className="w-72">
-              <input 
-                className="input join-item" 
-                placeholder="Search by title or author" 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
+        {/* Mobile/Tablet Stacked Layout */}
+        <div className="flex flex-col sm:hidden w-full max-w-sm gap-2">
+          <input 
+            className="input input-bordered w-full text-sm" 
+            placeholder="Search by title or author" 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <select 
             name="reading_status" 
-            className="select select-bordered"
+            className="select select-bordered w-full text-sm"
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
@@ -103,7 +100,93 @@ const Bookshelf = () => {
           </select>
           <select 
             name="book_category" 
-            className="select select-bordered"
+            className="select select-bordered w-full text-sm"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value="">All Categories</option>
+            <option value="Fiction">Fiction</option>
+            <option value="Non-Fiction">Non-Fiction</option>
+            <option value="Fantasy">Fantasy</option>
+          </select>
+          <button 
+            className="btn bg-amber-800 text-white w-full"
+            onClick={handleSearch}
+          >
+            <CiSearch className="text-xl" />
+            Search
+          </button>
+        </div>
+
+        {/* Tablet Join Layout */}
+        <div className="hidden sm:flex lg:hidden flex-col gap-2 w-full max-w-2xl">
+          <div className="flex gap-2">
+            <input 
+              className="input input-bordered flex-1" 
+              placeholder="Search by title or author" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button 
+              className="btn bg-amber-800 text-white"
+              onClick={handleSearch}
+            >
+              <CiSearch className="text-xl" />
+              <span className="hidden md:inline">Search</span>
+            </button>
+          </div>
+          <div className="flex gap-2">
+            <select 
+              name="reading_status" 
+              className="select select-bordered flex-1"
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+            >
+              <option value="">All Status</option>
+              <option value="Read">Read</option>
+              <option value="Reading">Reading</option>
+              <option value="Want-to-Read">Want-to-Read</option>
+            </select>
+            <select 
+              name="book_category" 
+              className="select select-bordered flex-1"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <option value="">All Categories</option>
+              <option value="Fiction">Fiction</option>
+              <option value="Non-Fiction">Non-Fiction</option>
+              <option value="Fantasy">Fantasy</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Desktop Join Layout */}
+        <div className="hidden lg:flex join">
+          <div>
+            <div className="w-64 xl:w-72">
+              <input 
+                className="input join-item" 
+                placeholder="Search by title or author" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+          <select 
+            name="reading_status" 
+            className="select select-bordered join-item"
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+          >
+            <option value="">All Status</option>
+            <option value="Read">Read</option>
+            <option value="Reading">Reading</option>
+            <option value="Want-to-Read">Want-to-Read</option>
+          </select>
+          <select 
+            name="book_category" 
+            className="select select-bordered join-item"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
           >
@@ -127,7 +210,7 @@ const Bookshelf = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-[90%] mx-auto mt-12"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 w-[95%] sm:w-[90%] mx-auto mt-8 sm:mt-12"
       >
         {isLoading ? (
           <div className="col-span-full flex justify-center items-center py-20">
@@ -135,7 +218,7 @@ const Bookshelf = () => {
           </div>
         ) : books.length === 0 ? (
           <div className="col-span-full text-center py-20">
-            <p className="text-gray-600 text-lg">No books found matching your criteria.</p>
+            <p className="text-gray-600 text-base sm:text-lg">No books found matching your criteria.</p>
           </div>
         ) : (
           books.map((book) => (

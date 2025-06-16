@@ -1,5 +1,5 @@
-import React, { use, useState } from "react";
-import { useLoaderData } from "react-router"; // Corrected import
+import React, { useContext, useState } from "react";
+import { useLoaderData } from "react-router";
 import { FaHeart } from "react-icons/fa";
 import { motion } from "framer-motion";
 import useBookUpvote from "../components/UseBookUpvote";
@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 
 const BookDetails = () => {
   const initialBookData = useLoaderData();
-  const { user } = use(AuthContext);
+  const { user } = useContext(AuthContext);
   const [bookdata, setBookdata] = useState(initialBookData);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
@@ -22,16 +22,10 @@ const BookDetails = () => {
     book_category,
     reading_status,
     book_overview,
-    upvote,
     user_email
   } = bookdata;
 
-  const {
-    upvoteBook,
-    getUpvoteCount,
-    hasUserUpvoted,
-    isUpvoting
-  } = useBookUpvote();
+  const { upvoteBook, getUpvoteCount, isUpvoting } = useBookUpvote();
 
   const isOwner = user?.email === user_email;
 
@@ -70,7 +64,6 @@ const BookDetails = () => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          // Assuming you have a way to get the token
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
@@ -105,14 +98,15 @@ const BookDetails = () => {
   ];
 
   return (
-    <div className="bg-base-100 min-h-screen py-10 px-4 lg:px-20">
+    <div className="bg-base-100 min-h-screen py-10 px-4 md:px-10 lg:px-20">
       <div className="container mx-auto">
         <motion.div
-          className="flex flex-col lg:flex-row items-center gap-10 bg-white/80 backdrop-blur-md p-6 lg:p-10 rounded-2xl shadow-xl"
+          className="flex flex-col lg:flex-row items-center lg:items-start gap-10 bg-white/80 backdrop-blur-md p-6 lg:p-10 rounded-2xl shadow-xl"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
+          {/* Left Side (Image + Status) */}
           <motion.div
             className="flex flex-col items-center w-full lg:w-auto"
             whileHover={{ scale: 1.02 }}
@@ -120,7 +114,7 @@ const BookDetails = () => {
             <img
               src={cover_photo || "/default-book-cover.jpg"}
               alt={book_title}
-              className="w-52 h-72 rounded-lg shadow-lg object-cover"
+              className="w-48 h-64 md:w-52 md:h-72 rounded-lg shadow-lg object-cover"
               onError={(e) => {
                 e.target.src = "/default-book-cover.jpg";
               }}
@@ -129,7 +123,7 @@ const BookDetails = () => {
             {isOwner ? (
               <select
                 name="reading_status"
-                className="select mt-5 select-bordered max-w-full bg-amber-700 text-white font-semibold"
+                className="select mt-5 select-bordered w-full bg-amber-700 text-white font-semibold"
                 value={reading_status}
                 onChange={handleStatusChange}
                 disabled={isUpdatingStatus || reading_status === "Read"}
@@ -154,12 +148,12 @@ const BookDetails = () => {
               <span className="loading loading-spinner loading-sm mt-2"></span>
             )}
 
-            <div className="mt-8  w-full max-w-sm">
+            <div className="mt-8 w-full max-w-xs">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="steps steps-vertical lg:steps-horizontal  w-full"
+                className="steps steps-vertical sm:steps-horizontal w-full"
               >
                 <div className={`step ${["Want-to-Read", "Reading", "Read"].includes(reading_status) ? "step-primary" : ""}`}>
                   <span className="text-sm text-black font-semibold">Want to Read</span>
@@ -174,23 +168,24 @@ const BookDetails = () => {
             </div>
           </motion.div>
 
+          {/* Right Side (Text Content) */}
           <motion.div
-            className="text-left space-y-4 w-full max-w-xl"
+            className="text-left space-y-4 w-full"
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-3xl lg:text-4xl font-bold text-amber-900">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-amber-900">
               {book_title}
             </h1>
 
-            <p className="text-xl font-medium text-amber-600 hover:underline cursor-pointer">
+            <p className="text-lg sm:text-xl font-medium text-amber-600 hover:underline cursor-pointer">
               {book_author}
             </p>
 
-            <div className="flex text-black flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 text-black">
               <p className="badge badge-outline">
-                <span className="font-semibold ">Category:</span> {book_category}
+                <span className="font-semibold">Category:</span> {book_category}
               </p>
               <p className="badge badge-outline">
                 <span className="font-semibold">Pages:</span> {total_page}
@@ -201,13 +196,12 @@ const BookDetails = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleUpvote}
-              disabled={isUpvoting || isOwner}
-              className={`flex items-center gap-2 btn btn-sm transition ${hasUserUpvoted(bookdata)
-                  ? 'bg-red-300 text-red-700 border-red-700'
-                  : isOwner
-                    ? 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed'
-                    : 'bg-pink-100 text-red-900 border-red-300 hover:bg-red-200'
-                }`}
+              disabled={isOwner}
+              className={`flex items-center gap-2 btn btn-sm transition ${
+                isOwner
+                  ? 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed'
+                  : 'bg-pink-100 text-red-900 border-red-300 hover:bg-red-200'
+              }`}
             >
               {isUpvoting ? (
                 <>

@@ -5,7 +5,7 @@ const PrivateRouter =({children})=>{
   const {user, loading}= use(AuthContext)
   const location = useLocation();
   if (!loading) {
-    return <span className="loading loading-ring loading-xl"></span>  
+    return <span className="loading loading-ring loading-xl text-center"></span>  
   }
 
   if (!user) {

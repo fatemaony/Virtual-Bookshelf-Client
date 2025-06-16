@@ -1,41 +1,33 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaHeart, FaBookOpen } from "react-icons/fa";
-import { Link } from "react-router"; // Corrected import
+import { Link } from "react-router";
 import { motion } from "framer-motion";
 import useBookUpvote from "../components/UseBookUpvote";
+import { AuthContext } from "../contexts/Context";
 
 const BookShelfCard = ({ book, books, setBooks }) => {
-  const {
-    _id,
-    book_category,
-    book_author,
-    cover_photo,
-    book_title,
-    reading_status,
-  } = book;
+  const { user } = useContext(AuthContext);
+  const { _id, book_title, user_email, cover_photo, book_author, book_category, reading_status, upvotes, upvote } = book;
 
-  const {
-    upvoteBook,
-    getUpvoteCount,
-    hasUserUpvoted,
-    isUpvoting,
-    canUserUpvote
-  } = useBookUpvote();
+  const { upvoteBook, getUpvoteCount, isUpvoting } = useBookUpvote();
 
+  const isOwner = user?.email === user_email;
 
   const handleUpvote = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!canUserUpvote(book)) return;
-
-    await upvoteBook(_id, book, (updatedBook) => {
-      if (setBooks && books) {
-        setBooks(books.map(b =>
-          b._id === _id ? updatedBook : b
-        ));
-      }
-    });
+    try {
+      await upvoteBook(_id, book, (updatedBook) => {
+        if (setBooks && books) {
+          setBooks(books.map(b => 
+            b._id === _id ? updatedBook : b
+          ));
+        }
+      });
+    } catch (error) {
+      console.error("Upvote failed:", error);
+    }
   };
 
   return (
@@ -60,24 +52,28 @@ const BookShelfCard = ({ book, books, setBooks }) => {
         <span className="badge badge-warning text-white px-3 py-1 font-semibold shadow-md">
           {book_author}
         </span>
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handleUpvote}
-          disabled={isUpvoting || !canUserUpvote(book)}
-          className={`flex items-center gap-1 text-sm px-3 py-1 rounded-full transition ${hasUserUpvoted(book)
-              ? 'bg-red-600 text-white hover:bg-red-700'
-              : canUserUpvote(book)
-                ? 'bg-red-100 text-red-800 hover:bg-red-200'
-                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-            }`}
+          disabled={isOwner || isUpvoting}
+          className={`flex items-center gap-2 btn btn-sm transition ${
+            isOwner
+              ? 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed'
+              : 'bg-pink-100 text-red-900 border-red-300 hover:bg-red-200'
+          }`}
         >
           {isUpvoting ? (
-            <span className="loading loading-spinner loading-xs"></span>
+            <>
+              <span className="loading loading-spinner loading-xs"></span>
+              <FaHeart className="text-red-700" />
+            </>
           ) : (
             <>
-              {getUpvoteCount(book)} <FaHeart className={`${hasUserUpvoted(book) ? 'text-white' : 'text-red-600'}`} />
+              {getUpvoteCount(book)} <FaHeart className="text-red-500" />
             </>
           )}
-        </button>
+        </motion.button>
       </div>
 
       <div className="px-6 pb-6">

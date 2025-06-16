@@ -14,11 +14,13 @@ const AddBooks = () => {
     console.log(newBook)
 
     //send to the server 
+    const token = await getFirebaseToken();
      
     fetch('https://virtual-bookshelf-server-chi.vercel.app/books',{
       method:"POST",
       headers:{
         'content-type':'application/json',
+         authorization: `Bearer ${token}`,
         
       },
       body:JSON.stringify(newBook)
@@ -51,7 +53,7 @@ const AddBooks = () => {
             <div className="space-y-4">
               <div>
                 <label className="label">Book Title:</label>
-                <input type="text" name="book_title" className="input input-bordered w-full" />
+                <input type="text" name="book_title" className="input input-bordered w-full" required />
               </div>
 
               <div>
@@ -66,7 +68,7 @@ const AddBooks = () => {
 
               <div>
                 <label className="label">Author:</label>
-                <input type="text" name="book_author" className="input input-bordered w-full" />
+                <input type="text" name="book_author" className="input input-bordered w-full" required />
               </div>
 
               <div>
@@ -86,7 +88,7 @@ const AddBooks = () => {
                 <input
                   type="email"
                   name="user_email"
-                  value={user.email}
+                  value={user?.email}
                   readOnly
                   className="input input-bordered w-full bg-base-200"
                 />
@@ -97,7 +99,7 @@ const AddBooks = () => {
                 <input
                   type="text"
                   name="user_name"
-                  value={user.displayName}
+                  value={user?.displayName}
                   readOnly
                   className="input input-bordered w-full bg-base-200"
                 />

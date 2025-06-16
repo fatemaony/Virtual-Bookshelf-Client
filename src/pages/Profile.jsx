@@ -85,7 +85,7 @@ const Profile = () => {
                 <h1 className="text-3xl font-bold text-gray-900">{user?.displayName || "User"}</h1>
                 <p className="text-gray-600">{user?.email || "No email"}</p>
               </div>
-              <div className="flex space-x-3">
+              <div className="flex lg:flex-row flex-col gap-2">
                 <button className="flex items-center space-x-2 bg-red-100 text-red-800 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors">
                   <FiEdit size={18} />
                   <Link to="/editprofile"><span>Edit Profile</span></Link>
