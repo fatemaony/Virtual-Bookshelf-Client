@@ -165,7 +165,7 @@ const EditProfile = () => {
     setLoading(true);
 
     try {
-      // Prepare profile data for backend (only include changed fields)
+      
       const profileData = {};
       if (name !== initialData.displayName) {
         profileData.displayName = name.trim();
@@ -174,23 +174,23 @@ const EditProfile = () => {
         profileData.photoURL = photo.trim();
       }
 
-      // Update Firebase profile first
+    
       if (updateUserProfile) {
         await updateUserProfile(name.trim(), photo.trim());
       }
 
-      // Update backend profile only if there are changes
+ 
       if (Object.keys(profileData).length > 0) {
         await updateProfileInBackend(profileData);
       }
 
-      // Update initial data to reflect current state
+      
       setInitialData({
         displayName: name.trim(),
         photoURL: photo.trim()
       });
 
-      // Refresh user profile to get updated timestamp
+    
       await fetchUserProfile();
 
       Swal.fire({
@@ -205,7 +205,7 @@ const EditProfile = () => {
     } catch (error) {
       console.error("Error updating profile:", error);
       
-      // Handle specific MongoDB errors
+     
       let errorMessage = 'Failed to update profile. Please try again.';
       
       if (error.message.includes('User not found')) {
@@ -258,7 +258,7 @@ const EditProfile = () => {
         <h2 className="text-2xl font-bold text-red-900">Edit Profile</h2>
       </div>
 
-      {/* Profile Status Info */}
+    
       {userProfile && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}

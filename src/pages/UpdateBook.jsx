@@ -1,12 +1,14 @@
-import React from "react";
+import React, { use } from "react";
 import { FaEdit } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useLoaderData, useNavigate } from "react-router";
 import Swal from "sweetalert2";
+import { AuthContext } from "../contexts/Context";
 
 const UpdateBookForm = () => {
   const book = useLoaderData();
   const navigate = useNavigate();
+  const {user, getFirebaseToken}=use(AuthContext)
 
   const handleUpdateBook = async (e) => {
     e.preventDefault();
@@ -26,12 +28,13 @@ const UpdateBookForm = () => {
       book_overview: formData.get('book_overview'),
       updatedAt: new Date()
     };
-
+    const token = await getFirebaseToken();
     try {
       const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/books/${book._id}`, {
         method: "PUT",
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedBook)
       });

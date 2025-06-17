@@ -86,13 +86,13 @@ const Profile = () => {
                 <p className="text-gray-600">{user?.email || "No email"}</p>
               </div>
               <div className="flex lg:flex-row flex-col gap-2">
-                <button className="flex items-center space-x-2 bg-red-100 text-red-800 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors">
+                {/* <button className="flex items-center space-x-2 bg-red-100 text-red-800 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors">
                   <FiEdit size={18} />
                   <Link to="/editprofile"><span>Edit Profile</span></Link>
-                </button>
+                </button> */}
                 <button 
                   onClick={handleSignOut} 
-                  className="flex items-center space-x-2 bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                 className="flex items-center space-x-2 bg-red-100 text-red-800 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors"
                 >
                   <FiLogOut size={18} />
                   <span>Logout</span>

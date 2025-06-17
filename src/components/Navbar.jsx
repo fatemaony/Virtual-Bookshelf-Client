@@ -2,11 +2,12 @@ import react, { use } from 'react';
 import { GiBurningBook } from "react-icons/gi";
 import { Link } from 'react-router';
 import { AuthContext } from '../contexts/Context';
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 const Navbar=()=>{
   const {user, signOutUser}=use(AuthContext)
-
-  const links = 
+  
+  const links =
   <>
         <Link to={"/"}>
         <li className='text-color-primary hover:underline font-semibold px-5'>Home</li>
@@ -22,6 +23,7 @@ const Navbar=()=>{
         </Link>
         
   </>
+
 return(
   <div className="navbar bg-base-100 shadow-lg lg:px-10">
   <div className="navbar-start">
@@ -41,22 +43,17 @@ return(
     Read<span className="text-red-800 font-bold">Ripple</span>
   </p>
 </div>
-
-  </div>
+   </div>
   <div className="navbar-center hidden lg:flex">
     <ul className="menu menu-horizontal px-1">
       {links}
     </ul>
   </div>
-
- 
+   
   <div className="navbar-end flex gap-2">
-
-    <label className="swap swap-rotate">
-  
-  <input type="checkbox" className="theme-controller" value="forest" />
-
-  {/* sun icon */}
+     <label className="swap swap-rotate">
+     <input type="checkbox" className="theme-controller" value="forest" />
+   {/* sun icon */}
   <svg
     className="swap-off h-10 w-10 fill-current"
     xmlns="http://www.w3.org/2000/svg"
@@ -64,8 +61,7 @@ return(
     <path
       d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" />
   </svg>
-
-  {/* moon icon */}
+   {/* moon icon */}
   <svg
     className="swap-on h-10 w-10 fill-current"
     xmlns="http://www.w3.org/2000/svg"
@@ -76,17 +72,20 @@ return(
 </label>
    {
     user? <div className="avatar">
-  <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2">
+  <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring-2 ring-offset-2"
+  data-tooltip-id="profile-tooltip"
+  data-tooltip-content="My Profile">
     <Link to={"/profile"}><img src={user.photoURL} /></Link>
   </div>
-</div> 
-    :<Link to={"/signin"}>
+</div>
+     :<Link to={"/signin"}>
     <button className="btn btn-outline text-color-primary hover:bg-color-primary hover:text-white">
       Sign In
       </button>
    </Link>
    }
   </div>
+  <ReactTooltip id="profile-tooltip" style={{ zIndex: 9999 }} />
 </div>
   )
 };

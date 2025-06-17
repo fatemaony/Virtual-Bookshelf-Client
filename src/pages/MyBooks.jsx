@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 
 const MyBooks = () => {
   const myBooks = useLoaderData();
-  const { user } = use(AuthContext);
+  const { user, getFirebaseToken } = use(AuthContext);
   const navigate = useNavigate();
   const userEmail = user?.email;
 
@@ -35,13 +35,15 @@ const MyBooks = () => {
     }
 
     setIsDeleting(id);
+    const token = await getFirebaseToken();
 
     try {
       
       const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/books/${id}`,{
         method:"DELETE",
         headers:{
-          'content-type':'application/json'
+          'content-type':'application/json',
+          authorization: `Bearer ${token}`,
         }
       });
 

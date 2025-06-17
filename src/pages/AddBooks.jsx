@@ -27,12 +27,12 @@ const AddBooks = () => {
     })
     .then(res =>res.json())
     .then(data =>{
-      if (data.insertedId) {
+      if (data?.insertedId) {
         console.log(data)
         Swal.fire({
         position: "center",
         icon: "success",
-        title: "Your work has been saved",
+        title: "Book Added successfully",
         showConfirmButton: false,
         timer: 1500
        });
