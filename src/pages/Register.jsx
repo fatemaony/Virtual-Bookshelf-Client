@@ -151,7 +151,8 @@ const Register = () => {
       await fetch(`https://virtual-bookshelf-server-chi.vercel.app/users/${result.user.email}/login`, {
         method: "PATCH",
         headers: {
-          'content-type': 'application/json'
+          'content-type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
       });
 
@@ -185,7 +186,7 @@ const Register = () => {
   };
 
   return (
-    <div className="hero bg-base-200 min-h-screen">
+    <div className="hero bg-base-200 py-22 min-h-screen">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <Lottie animationData={Registerlottie} loop={true} style={{width: "400px", height: "400px"}} />

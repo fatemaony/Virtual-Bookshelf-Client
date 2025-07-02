@@ -66,7 +66,7 @@ const UpdateBookForm = () => {
 
   return (
     <motion.div 
-      className="hero bg-base-200 min-h-screen py-10"
+      className="hero bg-base-200 min-h-screen py-25"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}

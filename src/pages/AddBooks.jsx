@@ -43,7 +43,7 @@ const AddBooks = () => {
    
   }
   return (
-    <div className="hero bg-base-200 min-h-screen py-10">
+    <div className="hero bg-base-200 min-h-screen py-25">
       <div className="card bg-base-100 w-full max-w-5xl shadow-2xl">
         <div className="card-body">
           <h1 className="text-3xl font-bold flex items-center justify-center text-[#a94906] gap-1 text-center mb-6"><FaBookBookmark /> Add Your Book 

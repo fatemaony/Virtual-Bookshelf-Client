@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Play, Star, TrendingUp, Globe, Heart } from 
 
 
 import sliderData from "../firebase/sliderData";
+import { Link } from "react-router";
 
 const Banner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -59,7 +60,7 @@ const Banner = () => {
 
   return (
     <div 
-      className="relative w-full mx-auto h-[600px] md:h-[500px] lg:h-[600px] overflow-hidden"
+      className="relative py-10 w-full mx-auto h-[600px] md:h-[500px] lg:h-[600px] overflow-hidden"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -128,9 +129,9 @@ const Banner = () => {
                 </p>
 
                 
-                <button className="bg-white text-gray-900 font-bold py-3 md:py-4 px-6 md:px-8 rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-xl text-base md:text-lg">
+                <Link to={"/bookshelf"}><button className="bg-white text-gray-900 font-bold py-3 md:py-4 px-6 md:px-8 rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-xl text-base md:text-lg">
                   {slide.buttonText}
-                </button>
+                </button></Link>
               </div>
 
              

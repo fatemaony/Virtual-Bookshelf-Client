@@ -12,7 +12,6 @@ const Home=()=>{
     <Banner/>
     <PopularBooks/>
     <BooksCategory/>
-    <About/>
     <FAQ/>
     </div>
   )

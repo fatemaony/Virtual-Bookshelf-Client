@@ -4,7 +4,7 @@ import { FaBookReader, FaLeaf, FaHeart, FaRegSmile } from "react-icons/fa";
 
 const About = () => {
   return (
-    <div className="bg-color-base-200 min-h-screen py-10 px-4 lg:px-20">
+    <div className="bg-color-base-200 min-h-screen py-25 px-4 lg:px-20">
       <motion.div
         className="container mx-auto bg-base-200 p-8 rounded-3xl shadow-2xl backdrop-blur-md"
         initial={{ opacity: 0, y: 40 }}

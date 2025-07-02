@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 
 const BookDetails = () => {
   const initialBookData = useLoaderData();
-  const { user } = useContext(AuthContext);
+  const { user, getFirebaseToken } = useContext(AuthContext);
   const [bookdata, setBookdata] = useState(initialBookData);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
@@ -59,12 +59,13 @@ const BookDetails = () => {
     }
 
     setIsUpdatingStatus(true);
+    const token = await getFirebaseToken();
     try {
       const response = await fetch(`https://virtual-bookshelf-server-chi.vercel.app/books/${_id}/reading-status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
           reading_status: newStatus,
@@ -98,7 +99,7 @@ const BookDetails = () => {
   ];
 
   return (
-    <div className="bg-base-100 min-h-screen py-10 px-4 md:px-10 lg:px-20">
+    <div className="bg-base-100 min-h-screen py-25 px-4 md:px-10 lg:px-20">
       <div className="container mx-auto">
         <motion.div
           className="flex flex-col lg:flex-row items-center lg:items-start gap-10 bg-white/80 backdrop-blur-md p-6 lg:p-10 rounded-2xl shadow-xl"

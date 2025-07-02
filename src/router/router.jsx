@@ -14,6 +14,7 @@ import ErrorPage from "../components/ErrorPage";
 import Profile from "../pages/Profile";
 import UpdateBookForm from "../pages/UpdateBook";
 import EditProfile from "../pages/EditProfile";
+import About from "../components/About";
 
 export const router = createBrowserRouter([
   {
@@ -74,6 +75,10 @@ export const router = createBrowserRouter([
          <Profile/>
         </PrivateRouter>,
         loader:()=>fetch("https://virtual-bookshelf-server-chi.vercel.app/books")
+      },
+      {
+       path:"about",
+       Component:About
       }
     ]
   },

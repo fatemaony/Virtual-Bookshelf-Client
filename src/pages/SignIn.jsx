@@ -198,7 +198,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="hero bg-base-200 min-h-screen">
+    <div className="hero py-22 bg-base-200 min-h-screen">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <Lottie animationData={SigninLottie} loop={true} style={{width: "350px", height: "350px"}} />
@@ -215,7 +215,7 @@ const SignIn = () => {
               
               <div><a className="link link-hover">Forgot password?</a></div>
               <div className="flex w-full flex-col">
-                <button className="btn text-white bg-red-950 mt-4">Login</button>
+                <button className="btn text-white bg-red-950 mt-2">Login</button>
               </div>
             </form>
 
@@ -233,7 +233,7 @@ const SignIn = () => {
               Login with Google
             </button>
 
-            <p className="pt-3 text-center">Don't have an account? <Link className="text-green-800" to={"/register"}>Register now...</Link></p>
+            <p className="pt-1 text-center">Don't have an account? <Link className="text-green-800" to={"/register"}>Register now...</Link></p>
           </div>
         </div>
       </div>

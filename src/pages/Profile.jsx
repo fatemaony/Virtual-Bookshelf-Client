@@ -56,7 +56,7 @@ const Profile = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-color-base-200 py-8 px-4 sm:px-6 lg:px-8"
+      className="min-h-screen bg-color-base-200 py-25 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-4xl mx-auto">
         <div className=" bg-white/80 backdrop-blur-md rounded-xl shadow-lg overflow-hidden mb-8">

@@ -80,7 +80,7 @@ const MyBooks = () => {
   };
 
   return (
-    <div className="p-6  overflow-x-auto">
+    <div className="py-25 px-6  overflow-x-auto">
       <h1 className="text-3xl font-bold text-center text-red-800 mb-6">📚 My Book Collection</h1>
       <table className="min-w-full bg-white/80 backdrop-blur-md shadow rounded-lg overflow-hidden">
         <thead className="bg-red-800 text-white">
